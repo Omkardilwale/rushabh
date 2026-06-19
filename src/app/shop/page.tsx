@@ -1,0 +1,324 @@
+"use client";
+
+import Link from "next/link";
+import { useMemo, useRef, useState } from "react";
+import { JewelryImage } from "@/components/JewelryImage";
+import { images } from "@/lib/images";
+import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
+import { Heart, SlidersHorizontal, Star, X } from "lucide-react";
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { OrnamentSticker } from "@/components/effects/OrnamentStickers";
+import { ParallaxLayer } from "@/components/effects/ParallaxLayer";
+import { categories, formatPrice, products } from "@/lib/data";
+
+const metalFilters = ["All", "18K Gold", "22K Gold", "Platinum"];
+const priceFilters = [
+  { label: "All Prices", min: 0, max: Infinity },
+  { label: "Under ₹30,000", min: 0, max: 30000 },
+  { label: "₹30,000 - ₹60,000", min: 30000, max: 60000 },
+  { label: "Above ₹60,000", min: 60000, max: Infinity },
+];
+
+export default function ShopPage() {
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedMetal, setSelectedMetal] = useState("All");
+  const [selectedPrice, setSelectedPrice] = useState(priceFilters[0]);
+  const [showFilters, setShowFilters] = useState(false);
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
+
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => {
+      const categoryMatch =
+        selectedCategory === "all" ||
+        product.category.toLowerCase() === selectedCategory;
+      const metalMatch =
+        selectedMetal === "All" || product.metal === selectedMetal;
+      const priceMatch =
+        product.price >= selectedPrice.min &&
+        product.price <= selectedPrice.max;
+      return categoryMatch && metalMatch && priceMatch;
+    });
+  }, [selectedCategory, selectedMetal, selectedPrice]);
+
+  return (
+    <>
+      <Header />
+      <main className="min-h-screen bg-ivory">
+        <div ref={heroRef} className="relative overflow-hidden maroon-gradient py-20 text-center md:py-28">
+          <motion.div
+            className="absolute inset-0 opacity-20"
+            style={{ y: heroY, scale: heroScale }}
+          >
+            <JewelryImage
+              src={images.shopBanner}
+              alt=""
+              fill
+            />
+          </motion.div>
+          <div className="absolute inset-0 bg-gradient-to-b from-maroon-dark/80 via-maroon/90 to-maroon-dark" />
+
+          <ParallaxLayer speed={0.5} className="absolute left-8 top-8 hidden md:block">
+            <OrnamentSticker variant="mandala" className="relative opacity-20" size={120} />
+          </ParallaxLayer>
+          <ParallaxLayer speed={0.3} className="absolute right-8 bottom-8 hidden md:block">
+            <OrnamentSticker variant="diamond" className="relative opacity-15" size={90} delay={1} />
+          </ParallaxLayer>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
+            className="relative"
+          >
+            <p className="text-sm font-medium uppercase tracking-[0.3em] text-gold-light">
+              Our Collection
+            </p>
+            <h1 className="mt-3 font-serif text-4xl font-light text-white md:text-6xl">
+              Shop All Jewellery
+            </h1>
+            <motion.p
+              key={filteredProducts.length}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="mt-4 text-white/70"
+            >
+              {filteredProducts.length} exquisite designs found
+            </motion.p>
+          </motion.div>
+        </div>
+
+        <div className="mx-auto max-w-7xl px-4 py-10 lg:px-8">
+          <div className="mb-6 flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => setShowFilters(!showFilters)}
+              className="inline-flex items-center gap-2 rounded-full border border-maroon/20 bg-white px-4 py-2 text-sm font-medium text-maroon lg:hidden"
+            >
+              {showFilters ? (
+                <X className="h-4 w-4" />
+              ) : (
+                <SlidersHorizontal className="h-4 w-4" />
+              )}
+              Filters
+            </button>
+          </div>
+
+          <div className="flex gap-8">
+            <aside
+              className={`${
+                showFilters ? "block" : "hidden"
+              } w-full shrink-0 lg:block lg:w-64`}
+            >
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="sticky top-36 space-y-8 rounded-2xl border border-gold/20 bg-white p-6 shadow-sm"
+              >
+                <div>
+                  <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-maroon">
+                    Category
+                  </h3>
+                  <div className="space-y-2">
+                    <FilterButton
+                      active={selectedCategory === "all"}
+                      onClick={() => setSelectedCategory("all")}
+                    >
+                      All Categories
+                    </FilterButton>
+                    {categories.map((cat) => (
+                      <FilterButton
+                        key={cat.slug}
+                        active={selectedCategory === cat.name.toLowerCase()}
+                        onClick={() =>
+                          setSelectedCategory(cat.name.toLowerCase())
+                        }
+                      >
+                        {cat.name}
+                      </FilterButton>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-maroon">
+                    Metal Type
+                  </h3>
+                  <div className="space-y-2">
+                    {metalFilters.map((metal) => (
+                      <FilterButton
+                        key={metal}
+                        active={selectedMetal === metal}
+                        onClick={() => setSelectedMetal(metal)}
+                      >
+                        {metal}
+                      </FilterButton>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-maroon">
+                    Price Range
+                  </h3>
+                  <div className="space-y-2">
+                    {priceFilters.map((filter) => (
+                      <FilterButton
+                        key={filter.label}
+                        active={selectedPrice.label === filter.label}
+                        onClick={() => setSelectedPrice(filter)}
+                      >
+                        {filter.label}
+                      </FilterButton>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            </aside>
+
+            <div className="flex-1">
+              <AnimatePresence mode="popLayout">
+                {filteredProducts.length === 0 ? (
+                  <motion.div
+                    key="empty"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="rounded-2xl border border-gold/20 bg-white p-16 text-center"
+                  >
+                    <p className="font-serif text-2xl text-maroon">
+                      No products found
+                    </p>
+                    <p className="mt-2 text-foreground/60">
+                      Try adjusting your filters
+                    </p>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key={`${selectedCategory}-${selectedMetal}-${selectedPrice.label}`}
+                    className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:gap-6"
+                    initial="hidden"
+                    animate="visible"
+                    variants={{
+                      hidden: {},
+                      visible: { transition: { staggerChildren: 0.06 } },
+                    }}
+                  >
+                    {filteredProducts.map((product) => (
+                      <Link key={product.id} href={`/shop/${product.id}`}>
+                      <motion.article
+                        variants={{
+                          hidden: { opacity: 0, y: 24, scale: 0.96 },
+                          visible: {
+                            opacity: 1,
+                            y: 0,
+                            scale: 1,
+                            transition: {
+                              duration: 0.45,
+                              ease: [0.22, 1, 0.36, 1] as const,
+                            },
+                          },
+                        }}
+                        layout
+                        className="group overflow-hidden rounded-2xl bg-white shadow-sm"
+                        whileHover={{
+                          y: -6,
+                          boxShadow: "0 20px 40px rgba(107,29,58,0.1)",
+                        }}
+                      >
+                        <div className="relative aspect-square overflow-hidden bg-cream">
+                          <JewelryImage
+                            src={product.image}
+                            alt={product.name}
+                            fill
+                            className="transition-transform duration-700 group-hover:scale-110"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-maroon-dark/20 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                          {product.badge && (
+                            <span className="absolute left-3 top-3 rounded-full bg-maroon px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
+                              {product.badge}
+                            </span>
+                          )}
+                          <button
+                            type="button"
+                            className="absolute right-3 top-3 rounded-full bg-white/90 p-2 text-maroon shadow-sm backdrop-blur-sm transition-transform hover:scale-110"
+                            aria-label="Add to wishlist"
+                          >
+                            <Heart className="h-4 w-4" />
+                          </button>
+                        </div>
+                        <div className="p-4">
+                          <p className="text-[10px] font-medium uppercase tracking-wider text-gold-dark">
+                            {product.category} · {product.metal}
+                          </p>
+                          <h3 className="mt-1 font-serif text-base font-medium line-clamp-2">
+                            {product.name}
+                          </h3>
+                          <div className="mt-1 flex items-center gap-1">
+                            <Star className="h-3 w-3 fill-gold text-gold" />
+                            <span className="text-xs text-foreground/60">
+                              {product.rating}
+                            </span>
+                          </div>
+                          <div className="mt-2 flex items-baseline gap-2">
+                            <span className="font-semibold text-maroon">
+                              {formatPrice(product.price)}
+                            </span>
+                            {product.originalPrice && (
+                              <span className="text-xs text-foreground/40 line-through">
+                                {formatPrice(product.originalPrice)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </motion.article>
+                      </Link>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
+}
+
+function FilterButton({
+  children,
+  active,
+  onClick,
+}: {
+  children: React.ReactNode;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`relative block w-full overflow-hidden rounded-lg px-3 py-2 text-left text-sm transition-colors ${
+        active ? "text-white" : "hover:bg-cream"
+      }`}
+    >
+      {active && (
+        <motion.span
+          layoutId="shop-filter-active"
+          className="absolute inset-0 bg-maroon"
+          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        />
+      )}
+      <span className="relative">{children}</span>
+    </button>
+  );
+}

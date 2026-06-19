@@ -1,26 +1,160 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fdfbf7;
+  --foreground: #1a1410;
+  --gold: #e5a93c;
+  --gold-light: #f0c56a;
+  --gold-dark: #d4af37;
+  --maroon: #6b1d3a;
+  --maroon-dark: #4a1228;
+  --cream: #f5f0e8;
+  --ivory: #fdfbf7;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-dark: var(--gold-dark);
+  --color-maroon: var(--maroon);
+  --color-maroon-dark: var(--maroon-dark);
+  --color-cream: var(--cream);
+  --color-ivory: var(--ivory);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-cormorant);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
 }
+
+.font-serif {
+  font-family: var(--font-cormorant), Georgia, serif;
+}
+
+.gold-gradient {
+  background: linear-gradient(135deg, #e5a93c 0%, #f0c56a 50%, #d4af37 100%);
+}
+
+.maroon-gradient {
+  background: linear-gradient(135deg, #6b1d3a 0%, #4a1228 100%);
+}
+
+.text-gold-gradient {
+  background: linear-gradient(135deg, #e5a93c, #f0c56a, #d4af37);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gold-shimmer 4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(201, 169, 98, 0.3), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+}
+
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-animate {
+  animation: ticker 20s linear infinite;
+}
+
+/* Film grain texture */
+.grain-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+}
+
+/* Cinematic vignette */
+.vignette {
+  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.5);
+}
+
+/* Ken Burns zoom on hero slides */
+@keyframes ken-burns {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.08); }
+}
+
+.ken-burns {
+  animation: ken-burns 5s ease-out forwards;
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(2deg); }
+}
+
+.float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Hide scrollbar for carousels */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Smooth section transitions */
+section {
+  position: relative;
+}
+
+/* Custom gold cursor — desktop only */
+html.custom-cursor,
+html.custom-cursor * {
+  cursor: none !important;
+}
+
+@keyframes sparkle-pulse {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  50% { opacity: 0.8; transform: scale(1); }
+}
+
+.sparkle-particle {
+  animation: sparkle-pulse ease-in-out infinite;
+}
+
+@keyframes ornament-drift {
+  0%, 100% { opacity: 0.15; transform: scale(0.95) rotate(0deg); }
+  50% { opacity: 0.35; transform: scale(1.05) rotate(5deg); }
+}
+
+.ornament-sticker {
+  animation: ornament-drift 4s ease-in-out infinite;
+}
+
+@keyframes gold-shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
