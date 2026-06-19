@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { JewelryImage } from "@/components/JewelryImage";
 import { images } from "@/lib/images";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
@@ -11,6 +12,11 @@ import { Header } from "@/components/Header";
 import { OrnamentSticker } from "@/components/effects/OrnamentStickers";
 import { ParallaxLayer } from "@/components/effects/ParallaxLayer";
 import { categories, formatPrice, products } from "@/lib/data";
+import {
+  getShopFilterLabel,
+  matchesShopUrlFilters,
+  parseShopSearchParams,
+} from "@/lib/shop-filters";
 
 const metalFilters = ["All", "18K Gold", "22K Gold", "Platinum"];
 const priceFilters = [
@@ -21,11 +27,47 @@ const priceFilters = [
 ];
 
 export default function ShopPage() {
+  return (
+    <Suspense fallback={<ShopPageFallback />}>
+      <ShopPageContent />
+    </Suspense>
+  );
+}
+
+function ShopPageFallback() {
+  return (
+    <>
+      <Header />
+      <main className="min-h-screen bg-ivory" />
+      <Footer />
+    </>
+  );
+}
+
+function ShopPageContent() {
+  const searchParams = useSearchParams();
+  const urlFilters = useMemo(
+    () => parseShopSearchParams(searchParams),
+    [searchParams],
+  );
+  const activeUrlLabel = getShopFilterLabel(urlFilters);
+  const hasUrlFilters = Boolean(
+    urlFilters.metal || urlFilters.occasion || urlFilters.category,
+  );
+
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedMetal, setSelectedMetal] = useState("All");
   const [selectedPrice, setSelectedPrice] = useState(priceFilters[0]);
   const [showFilters, setShowFilters] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (urlFilters.category) {
+      setSelectedCategory(urlFilters.category.toLowerCase());
+      return;
+    }
+    setSelectedCategory("all");
+  }, [urlFilters.category]);
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -44,9 +86,19 @@ export default function ShopPage() {
       const priceMatch =
         product.price >= selectedPrice.min &&
         product.price <= selectedPrice.max;
-      return categoryMatch && metalMatch && priceMatch;
+      const urlMatch = matchesShopUrlFilters(product, urlFilters);
+      return categoryMatch && metalMatch && priceMatch && urlMatch;
     });
-  }, [selectedCategory, selectedMetal, selectedPrice]);
+  }, [selectedCategory, selectedMetal, selectedPrice, urlFilters]);
+
+  const gridKey = [
+    selectedCategory,
+    selectedMetal,
+    selectedPrice.label,
+    urlFilters.metal,
+    urlFilters.occasion,
+    urlFilters.category,
+  ].join("-");
 
   return (
     <>
@@ -82,7 +134,7 @@ export default function ShopPage() {
               Our Collection
             </p>
             <h1 className="mt-3 font-serif text-4xl font-light text-white md:text-6xl">
-              Shop All Jewellery
+              {activeUrlLabel ?? "Shop All Jewellery"}
             </h1>
             <motion.p
               key={filteredProducts.length}
@@ -96,6 +148,20 @@ export default function ShopPage() {
         </div>
 
         <div className="mx-auto max-w-7xl px-4 py-10 lg:px-8">
+          {hasUrlFilters && (
+            <div className="mb-6 flex flex-wrap items-center gap-3">
+              <span className="rounded-full border border-gold/30 bg-cream px-4 py-1.5 text-sm font-medium text-maroon">
+                {activeUrlLabel}
+              </span>
+              <Link
+                href="/shop"
+                className="text-sm font-medium text-maroon underline-offset-4 hover:underline"
+              >
+                Clear filter
+              </Link>
+            </div>
+          )}
+
           <div className="mb-6 flex items-center justify-between">
             <button
               type="button"
@@ -200,10 +266,18 @@ export default function ShopPage() {
                     <p className="mt-2 text-foreground/60">
                       Try adjusting your filters
                     </p>
+                    {hasUrlFilters && (
+                      <Link
+                        href="/shop"
+                        className="mt-6 inline-block text-sm font-semibold uppercase tracking-wider text-maroon hover:text-gold-dark"
+                      >
+                        View all products
+                      </Link>
+                    )}
                   </motion.div>
                 ) : (
                   <motion.div
-                    key={`${selectedCategory}-${selectedMetal}-${selectedPrice.label}`}
+                    key={gridKey}
                     className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:gap-6"
                     initial="hidden"
                     animate="visible"
