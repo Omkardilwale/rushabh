@@ -6,7 +6,8 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { collections } from "@/lib/data";
-import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
+import { JharokhaFrame } from "@/components/ui/JharokhaFrame";
+import { RoyalBackground } from "./effects/RoyalBackground";
 import { ScrollReveal } from "./effects/ScrollReveal";
 
 export function FeaturedCollections() {
@@ -27,6 +28,7 @@ export function FeaturedCollections() {
 
   return (
     <section id="collections" className="relative overflow-hidden bg-cream py-24">
+      <RoyalBackground density="normal" />
       <div className="relative z-10 mx-auto max-w-7xl px-4 lg:px-8">
         <ScrollReveal className="mb-12 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
           <div>
@@ -57,7 +59,6 @@ export function FeaturedCollections() {
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
                 className="absolute inset-0"
               >
-                <HeritageCardTopBand />
                 <JewelryImage
                   src={collections[active].image}
                   alt={collections[active].name}
@@ -68,7 +69,7 @@ export function FeaturedCollections() {
                 <div className="absolute inset-0 bg-gradient-to-r from-maroon-dark/90 via-maroon-dark/40 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-t from-maroon-dark/70 via-transparent to-transparent" />
 
-                <div className="absolute bottom-0 left-0 right-0 border-t border-gold/25 p-8 md:p-12">
+                <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
                   <motion.span
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}

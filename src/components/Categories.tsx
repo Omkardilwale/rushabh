@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { categories } from "@/lib/data";
 import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
+import { RoyalBackground } from "./effects/RoyalBackground";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "./effects/ScrollReveal";
 
 export function Categories() {
@@ -14,6 +15,7 @@ export function Categories() {
 
   return (
     <section className="relative overflow-hidden bg-ivory py-24">
+      <RoyalBackground density="rich" />
       <div className="relative z-10 mx-auto max-w-7xl px-4 lg:px-8">
         <ScrollReveal className="mb-14 text-center">
           <p className="text-sm font-medium uppercase tracking-[0.25em] text-gold-dark">

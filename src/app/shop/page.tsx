@@ -10,6 +10,7 @@ import { Heart, SlidersHorizontal, Star, X } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
+import { RoyalBackground } from "@/components/effects/RoyalBackground";
 import { OrnamentSticker } from "@/components/effects/OrnamentStickers";
 import { ParallaxLayer } from "@/components/effects/ParallaxLayer";
 import { categories, formatPrice, products } from "@/lib/data";
@@ -148,7 +149,9 @@ function ShopPageContent() {
           </motion.div>
         </div>
 
-        <div className="relative z-10 mx-auto max-w-7xl px-4 py-10 lg:px-8">
+        <div className="relative">
+          <RoyalBackground density="normal" />
+          <div className="relative z-10 mx-auto max-w-7xl px-4 py-10 lg:px-8">
           {hasUrlFilters && (
             <div className="mb-6 flex flex-wrap items-center gap-3">
               <span className="rounded-full border border-gold/30 bg-cream px-4 py-1.5 text-sm font-medium text-maroon">
@@ -363,6 +366,7 @@ function ShopPageContent() {
                 )}
               </AnimatePresence>
             </div>
+          </div>
           </div>
         </div>
       </main>

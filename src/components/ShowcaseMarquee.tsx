@@ -1,8 +1,15 @@
 "use client";
 
 import { JewelryImage } from "@/components/JewelryImage";
-import { motion } from "framer-motion";
-import { useCallback, useEffect, useRef } from "react";
+import Link from "next/link";
+import {
+  motion,
+  useAnimationFrame,
+  useMotionValue,
+  useReducedMotion,
+} from "framer-motion";
+import { useEffect, useRef } from "react";
+import { RoyalBackground } from "./effects/RoyalBackground";
 import { products } from "@/lib/data";
 
 const marqueeItems = [
@@ -13,6 +20,9 @@ const marqueeItems = [
   "Handcrafted in India",
   ...products.slice(0, 6).map((p) => p.name),
 ];
+
+/** px per second — higher = faster auto slide */
+const AUTO_SCROLL_SPEED = 60;
 
 export function ShowcaseMarquee() {
   return (
@@ -39,95 +49,92 @@ export function ShowcaseMarquee() {
 }
 
 export function ImageMarquee() {
-  const images = products.slice(0, 8);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const items = products.slice(0, 8);
+  const loopItems = [...items, ...items];
+  const trackRef = useRef<HTMLDivElement>(null);
+  const loopWidthRef = useRef(0);
   const pausedRef = useRef(false);
-  const userScrollingRef = useRef(false);
+  const draggingRef = useRef(false);
+  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const x = useMotionValue(0);
+  const reduceMotion = useReducedMotion();
 
-  const scrollStep = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el || pausedRef.current || userScrollingRef.current) return;
-
-    const maxScroll = el.scrollWidth - el.clientWidth;
-    if (maxScroll <= 0) return;
-
-    if (el.scrollLeft >= maxScroll - 1) {
-      el.scrollLeft = 0;
-    } else {
-      el.scrollLeft += 1.2;
-    }
-  }, []);
+  const measureLoop = () => {
+    const el = trackRef.current;
+    if (!el) return;
+    const half = el.scrollWidth / 2;
+    if (half > 0) loopWidthRef.current = half;
+  };
 
   useEffect(() => {
-    const interval = window.setInterval(scrollStep, 16);
-    return () => window.clearInterval(interval);
-  }, [scrollStep]);
-
-  useEffect(() => {
-    const el = scrollRef.current;
+    measureLoop();
+    const el = trackRef.current;
     if (!el) return;
 
-    let resumeTimer: ReturnType<typeof setTimeout>;
-
-    const pause = () => {
-      pausedRef.current = true;
-    };
-
-    const resumeLater = () => {
-      window.clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(() => {
-        pausedRef.current = false;
-        userScrollingRef.current = false;
-      }, 2000);
-    };
-
-    const onTouchStart = () => {
-      userScrollingRef.current = true;
-      pause();
-    };
-
-    const onScroll = () => {
-      userScrollingRef.current = true;
-      pause();
-      resumeLater();
-    };
-
-    el.addEventListener("touchstart", onTouchStart, { passive: true });
-    el.addEventListener("mousedown", pause);
-    el.addEventListener("mouseup", resumeLater);
-    el.addEventListener("mouseleave", resumeLater);
-    el.addEventListener("touchend", resumeLater);
-    el.addEventListener("scroll", onScroll, { passive: true });
-
-    return () => {
-      window.clearTimeout(resumeTimer);
-      el.removeEventListener("touchstart", onTouchStart);
-      el.removeEventListener("mousedown", pause);
-      el.removeEventListener("mouseup", resumeLater);
-      el.removeEventListener("mouseleave", resumeLater);
-      el.removeEventListener("touchend", resumeLater);
-      el.removeEventListener("scroll", onScroll);
-    };
+    const observer = new ResizeObserver(measureLoop);
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
+
+  const pauseAuto = (ms = 3000) => {
+    pausedRef.current = true;
+    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+    resumeTimerRef.current = setTimeout(() => {
+      pausedRef.current = false;
+    }, ms);
+  };
+
+  useAnimationFrame((_, delta) => {
+    if (reduceMotion || pausedRef.current || draggingRef.current) return;
+
+    const loopWidth = loopWidthRef.current;
+    if (loopWidth <= 0) return;
+
+    const moveBy = (AUTO_SCROLL_SPEED * delta) / 1000;
+    let next = x.get() - moveBy;
+
+    if (next <= -loopWidth) {
+      next += loopWidth;
+    }
+
+    x.set(next);
+  });
 
   return (
     <section className="relative overflow-hidden bg-cream py-6">
-      <div
-        ref={scrollRef}
-        className="scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2"
-        style={{ WebkitOverflowScrolling: "touch" }}
-      >
-        {[...images, ...images].map((product, i) => (
-          <div
-            key={`${product.id}-${i}`}
-            className="relative h-28 w-28 shrink-0 snap-center overflow-hidden rounded-xl border border-gold/20 shadow-sm md:h-36 md:w-36"
-          >
-            <JewelryImage src={product.image} alt={product.name} fill />
-          </div>
-        ))}
+      <RoyalBackground density="light" />
+      <div className="relative z-10 overflow-hidden px-4 pb-2">
+        <motion.div
+          ref={trackRef}
+          style={{ x, touchAction: "pan-y" }}
+          className="flex w-max cursor-grab gap-4 active:cursor-grabbing"
+          drag="x"
+          dragElastic={0.06}
+          dragMomentum
+          onDragStart={() => {
+            draggingRef.current = true;
+            pausedRef.current = true;
+          }}
+          onDragEnd={() => {
+            draggingRef.current = false;
+            pauseAuto(3500);
+          }}
+        >
+          {loopItems.map((product, i) => (
+            <Link
+              key={`${product.id}-${i}`}
+              href={`/shop/${product.id}`}
+              className="relative h-28 w-28 shrink-0 overflow-hidden rounded-xl border border-gold/20 bg-ivory shadow-sm transition-transform hover:scale-[1.03] md:h-36 md:w-36"
+              draggable={false}
+              onFocus={() => pauseAuto(4000)}
+            >
+              <JewelryImage src={product.image} alt={product.name} fill />
+            </Link>
+          ))}
+        </motion.div>
       </div>
-      <p className="mt-2 text-center text-[10px] uppercase tracking-wider text-foreground/40">
-        Swipe to browse · Auto-scrolling
+      <p className="relative z-10 mt-2 text-center text-[10px] uppercase tracking-wider text-foreground/40">
+        Swipe or drag · Auto-scrolling
       </p>
     </section>
   );

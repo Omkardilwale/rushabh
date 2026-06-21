@@ -14,6 +14,7 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { JewelryImage } from "@/components/JewelryImage";
 import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
+import { RoyalBackground } from "@/components/effects/RoyalBackground";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
 import {
   formatPrice,
@@ -29,7 +30,9 @@ export function ProductDetail({ id }: { id: number }) {
     return (
       <>
         <Header />
-        <main className="flex min-h-[60vh] flex-col items-center justify-center bg-ivory px-4">
+        <main className="relative flex min-h-[60vh] flex-col items-center justify-center overflow-hidden bg-ivory px-4">
+          <RoyalBackground density="light" />
+          <div className="relative z-10 text-center">
           <h1 className="font-serif text-3xl text-maroon">Product not found</h1>
           <Link
             href="/shop"
@@ -38,6 +41,7 @@ export function ProductDetail({ id }: { id: number }) {
             <ArrowLeft className="h-4 w-4" />
             Back to shop
           </Link>
+          </div>
         </main>
         <Footer />
       </>
@@ -49,8 +53,9 @@ export function ProductDetail({ id }: { id: number }) {
   return (
     <>
       <Header />
-      <main className="bg-ivory">
-        <div className="border-b border-gold/15 bg-cream/50 py-4">
+      <main className="relative overflow-hidden bg-ivory">
+        <RoyalBackground density="light" />
+        <div className="relative z-10 border-b border-gold/15 bg-cream/50 py-4">
           <div className="mx-auto flex max-w-7xl items-center gap-2 px-4 text-sm text-foreground/60 lg:px-8">
             <Link href="/" className="hover:text-maroon">
               Home

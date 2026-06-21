@@ -7,6 +7,7 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ChevronLeft, ChevronRight, Heart, Star } from "lucide-react";
 import { formatPrice, products } from "@/lib/data";
 import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
+import { RoyalBackground } from "./effects/RoyalBackground";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "./effects/ScrollReveal";
 
 function ProductCard({
@@ -120,6 +121,7 @@ export function ProductGrid() {
 
   return (
     <section className="relative overflow-hidden bg-ivory py-24">
+      <RoyalBackground density="normal" />
       <div className="relative z-10 mx-auto max-w-7xl px-4 lg:px-8">
         <ScrollReveal className="mb-12 flex items-end justify-between">
           <div className="text-center md:text-left">

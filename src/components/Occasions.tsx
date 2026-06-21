@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { occasions } from "@/lib/data";
 import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
+import { RoyalBackground } from "./effects/RoyalBackground";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "./effects/ScrollReveal";
 
 const occasionIcons: Record<string, LucideIcon> = {
@@ -52,6 +53,7 @@ const occasionStyles: Record<string, { gradient: string; accent: string }> = {
 export function Occasions() {
   return (
     <section className="relative overflow-hidden bg-cream py-24">
+      <RoyalBackground density="normal" />
       <div className="relative z-10 mx-auto max-w-7xl px-4 lg:px-8">
         <ScrollReveal className="mb-14 text-center">
           <p className="text-sm font-medium uppercase tracking-[0.25em] text-gold-dark">
