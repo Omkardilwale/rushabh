@@ -21,7 +21,7 @@ export function FeaturedCollections() {
   }, []);
 
   useEffect(() => {
-    const timer = setInterval(next, 5000);
+    const timer = setInterval(next, 3500);
     return () => clearInterval(timer);
   }, [next]);
 
@@ -46,7 +46,7 @@ export function FeaturedCollections() {
           </Link>
         </ScrollReveal>
 
-        <div className="relative">
+        <div className="relative pb-2">
           <JharokhaFrame tone="cream" className="relative aspect-[16/9] md:aspect-[21/9]">
             <AnimatePresence mode="wait">
               <motion.div
@@ -111,26 +111,31 @@ export function FeaturedCollections() {
             </AnimatePresence>
           </JharokhaFrame>
 
-          <div className="absolute -bottom-6 right-8 flex gap-2 md:right-12">
-            <button
-              type="button"
-              onClick={prev}
-              className="rounded-full border border-gold/30 bg-ivory p-3 text-maroon shadow-lg transition-all hover:bg-cream"
-              aria-label="Previous collection"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
-              type="button"
-              onClick={next}
-              className="rounded-full border border-gold/30 bg-ivory p-3 text-maroon shadow-lg transition-all hover:bg-cream"
-              aria-label="Next collection"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
+          <div className="mt-4 flex items-center justify-between gap-4 px-1">
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={prev}
+                className="rounded-full border border-gold/30 bg-ivory p-2.5 text-maroon shadow-md transition-all hover:bg-cream md:p-3"
+                aria-label="Previous collection"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                type="button"
+                onClick={next}
+                className="rounded-full border border-gold/30 bg-ivory p-2.5 text-maroon shadow-md transition-all hover:bg-cream md:p-3"
+                aria-label="Next collection"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
+            <p className="text-xs uppercase tracking-wider text-foreground/45">
+              {active + 1} / {collections.length}
+            </p>
           </div>
 
-          <div className="mt-10 flex justify-center gap-3">
+          <div className="mt-6 flex justify-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
             {collections.map((col, i) => (
               <button
                 key={col.name}
