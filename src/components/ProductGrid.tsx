@@ -6,7 +6,7 @@ import { JewelryImage } from "@/components/JewelryImage";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ChevronLeft, ChevronRight, Heart, Star } from "lucide-react";
 import { formatPrice, products } from "@/lib/data";
-import { OrnamentSticker } from "./effects/OrnamentStickers";
+import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "./effects/ScrollReveal";
 
 function ProductCard({
@@ -34,16 +34,18 @@ function ProductCard({
 
   return (
     <Link href={`/shop/${product.id}`} className="block">
+    <JharokhaFrame tone="ivory" className="group transition-shadow hover:shadow-md">
     <motion.article
       ref={ref}
-      className="group relative overflow-hidden rounded-2xl bg-ivory shadow-sm"
+      className="relative"
       style={{ rotateX, rotateY, transformPerspective: 800 }}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
-      whileHover={{ y: -8, boxShadow: "0 20px 40px rgba(107,29,58,0.12)" }}
+      whileHover={{ y: -6 }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
     >
-      <div className="relative aspect-square overflow-hidden bg-cream">
+      <div className="jharokha-media relative aspect-square bg-cream">
+        <HeritageCardTopBand />
         <JewelryImage
           src={product.image}
           alt={product.name}
@@ -75,7 +77,7 @@ function ProductCard({
         </div>
       </div>
 
-      <div className="p-4">
+      <div className="border-t border-gold/25 p-4">
         <p className="text-[10px] font-medium uppercase tracking-wider text-gold-dark">
           {product.metal}
         </p>
@@ -98,6 +100,7 @@ function ProductCard({
         </div>
       </div>
     </motion.article>
+    </JharokhaFrame>
     </Link>
   );
 }
@@ -117,9 +120,7 @@ export function ProductGrid() {
 
   return (
     <section className="relative overflow-hidden bg-ivory py-24">
-      <OrnamentSticker variant="mandala" className="absolute right-0 top-12 hidden opacity-10 lg:block" size={180} />
-
-      <div className="mx-auto max-w-7xl px-4 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 lg:px-8">
         <ScrollReveal className="mb-12 flex items-end justify-between">
           <div className="text-center md:text-left">
             <p className="text-sm font-medium uppercase tracking-[0.25em] text-gold-dark">

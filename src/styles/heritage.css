@@ -1,0 +1,30 @@
+/* Heritage card — simple gold border, top/bottom bands match in components */
+
+.heritage-card {
+  background: var(--ivory);
+}
+
+.heritage-card-bands .heritage-band-top,
+.heritage-card-bands .heritage-band-bottom {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  border-color: rgba(212, 175, 55, 0.25);
+}
+
+.heritage-card-bands .heritage-band-top {
+  top: 0;
+  border-bottom-width: 1px;
+}
+
+.heritage-card-bands .heritage-band-bottom {
+  bottom: 0;
+  border-top-width: 1px;
+}
+
+.jharokha-media {
+  position: relative;
+  overflow: hidden;
+}

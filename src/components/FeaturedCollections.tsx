@@ -6,8 +6,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { collections } from "@/lib/data";
-import { OrnamentSticker } from "./effects/OrnamentStickers";
-import { ParallaxLayer } from "./effects/ParallaxLayer";
+import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
 import { ScrollReveal } from "./effects/ScrollReveal";
 
 export function FeaturedCollections() {
@@ -28,14 +27,7 @@ export function FeaturedCollections() {
 
   return (
     <section id="collections" className="relative overflow-hidden bg-cream py-24">
-      <ParallaxLayer speed={0.5} className="absolute left-4 top-16">
-        <OrnamentSticker variant="paisley" className="relative opacity-20" size={110} />
-      </ParallaxLayer>
-      <ParallaxLayer speed={0.35} className="absolute right-6 bottom-16 hidden md:block">
-        <OrnamentSticker variant="ring" className="relative opacity-15" size={90} delay={1.5} />
-      </ParallaxLayer>
-
-      <div className="mx-auto max-w-7xl px-4 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 lg:px-8">
         <ScrollReveal className="mb-12 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
           <div>
             <p className="text-sm font-medium uppercase tracking-[0.25em] text-gold-dark">
@@ -55,7 +47,7 @@ export function FeaturedCollections() {
         </ScrollReveal>
 
         <div className="relative">
-          <div className="relative aspect-[16/9] overflow-hidden rounded-3xl md:aspect-[21/9]">
+          <JharokhaFrame tone="cream" className="relative aspect-[16/9] md:aspect-[21/9]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={active}
@@ -65,6 +57,7 @@ export function FeaturedCollections() {
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
                 className="absolute inset-0"
               >
+                <HeritageCardTopBand />
                 <JewelryImage
                   src={collections[active].image}
                   alt={collections[active].name}
@@ -75,7 +68,7 @@ export function FeaturedCollections() {
                 <div className="absolute inset-0 bg-gradient-to-r from-maroon-dark/90 via-maroon-dark/40 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-t from-maroon-dark/70 via-transparent to-transparent" />
 
-                <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
+                <div className="absolute bottom-0 left-0 right-0 border-t border-gold/25 p-8 md:p-12">
                   <motion.span
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -116,7 +109,7 @@ export function FeaturedCollections() {
                 </div>
               </motion.div>
             </AnimatePresence>
-          </div>
+          </JharokhaFrame>
 
           <div className="absolute -bottom-6 right-8 flex gap-2 md:right-12">
             <button

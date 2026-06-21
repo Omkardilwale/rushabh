@@ -1,12 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { JewelryImage } from "@/components/JewelryImage";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { categories } from "@/lib/data";
-import { OrnamentSticker, SectionOrnaments } from "./effects/OrnamentStickers";
+import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "./effects/ScrollReveal";
 
 export function Categories() {
@@ -14,9 +14,7 @@ export function Categories() {
 
   return (
     <section className="relative overflow-hidden bg-ivory py-24">
-      <SectionOrnaments />
-
-      <div className="relative mx-auto max-w-7xl px-4 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 lg:px-8">
         <ScrollReveal className="mb-14 text-center">
           <p className="text-sm font-medium uppercase tracking-[0.25em] text-gold-dark">
             Explore
@@ -34,46 +32,37 @@ export function Categories() {
             <StaggerItem key={category.slug}>
               <Link
                 href={`/shop?category=${category.slug}`}
-                className="group relative block overflow-hidden rounded-2xl"
+                className="group block"
                 onMouseEnter={() => setHovered(category.slug)}
                 onMouseLeave={() => setHovered(null)}
               >
-                <motion.div
-                  className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-cream"
-                  whileHover={{ y: -6 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                <JharokhaFrame
+                  tone="cream"
+                  className="transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-md"
                 >
-                  <JewelryImage
-                    src={category.image}
-                    alt={category.name}
-                    fill
-                    className="transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-maroon-dark/90 via-maroon-dark/20 to-transparent transition-opacity group-hover:from-maroon-dark/95" />
+                  <div className="jharokha-media relative aspect-[3/4] bg-cream">
+                    <HeritageCardTopBand />
+                    <JewelryImage
+                      src={category.image}
+                      alt={category.name}
+                      fill
+                      className="transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-maroon-dark/95 via-maroon-dark/25 to-transparent" />
 
-                  <motion.div
-                    className="absolute inset-0 border-2 border-gold/0 transition-colors group-hover:border-gold/40"
-                    style={{ borderRadius: "1rem" }}
-                  />
-
-                  <div className="absolute bottom-0 left-0 right-0 p-4 text-center">
-                    <h3 className="font-serif text-lg font-medium text-white">
-                      {category.name}
-                    </h3>
-                    <motion.p
-                      className="text-xs text-gold-light/80"
-                      animate={{ opacity: hovered === category.slug ? 1 : 0.7 }}
-                    >
-                      {category.count} designs
-                    </motion.p>
+                    <div className="absolute bottom-0 left-0 right-0 border-t border-gold/25 bg-gradient-to-t from-maroon-dark/80 to-transparent p-3.5 text-center">
+                      <h3 className="font-serif text-base font-medium text-white lg:text-lg">
+                        {category.name}
+                      </h3>
+                      <motion.p
+                        className="mt-0.5 text-[10px] uppercase tracking-wider text-gold-light/90"
+                        animate={{ opacity: hovered === category.slug ? 1 : 0.75 }}
+                      >
+                        {category.count} designs
+                      </motion.p>
+                    </div>
                   </div>
-
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-                    <span className="rounded-full border border-white/30 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
-                      Explore
-                    </span>
-                  </div>
-                </motion.div>
+                </JharokhaFrame>
               </Link>
             </StaggerItem>
           ))}
@@ -89,8 +78,6 @@ export function Categories() {
           </Link>
         </ScrollReveal>
       </div>
-
-      <OrnamentSticker variant="diamond" className="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-10" size={60} />
     </section>
   );
 }

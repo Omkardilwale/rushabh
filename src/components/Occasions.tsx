@@ -10,7 +10,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { occasions } from "@/lib/data";
-import { OrnamentSticker } from "./effects/OrnamentStickers";
+import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "./effects/ScrollReveal";
 
 const occasionIcons: Record<string, LucideIcon> = {
@@ -52,14 +52,7 @@ const occasionStyles: Record<string, { gradient: string; accent: string }> = {
 export function Occasions() {
   return (
     <section className="relative overflow-hidden bg-cream py-24">
-      <OrnamentSticker
-        variant="paisley"
-        className="absolute right-8 top-12 opacity-15"
-        size={100}
-        delay={1}
-      />
-
-      <div className="mx-auto max-w-7xl px-4 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 lg:px-8">
         <ScrollReveal className="mb-14 text-center">
           <p className="text-sm font-medium uppercase tracking-[0.25em] text-gold-dark">
             For Every Moment
@@ -89,7 +82,9 @@ export function Occasions() {
                   href={`/shop?occasion=${occasion.name.toLowerCase().replace(" ", "-")}`}
                   className="group block"
                 >
-                  <div className="relative overflow-hidden rounded-2xl bg-ivory shadow-sm transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-lg">
+                  <JharokhaFrame tone="ivory" className="transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-md">
+                  <div className="relative overflow-hidden bg-ivory">
+                    <HeritageCardTopBand />
                     <div
                       className={`relative flex h-24 items-center justify-center bg-gradient-to-br ${style.gradient} sm:h-28`}
                     >
@@ -101,7 +96,7 @@ export function Occasions() {
                       </div>
                     </div>
 
-                    <div className="border-t border-gold/10 p-4 text-center">
+                    <div className="border-t border-gold/25 p-4 text-center">
                       <h3 className="font-serif text-base font-medium text-maroon sm:text-lg">
                         {occasion.name}
                       </h3>
@@ -112,6 +107,7 @@ export function Occasions() {
 
                     <div className="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-gold transition-transform duration-200 group-hover:scale-x-100" />
                   </div>
+                  </JharokhaFrame>
                 </Link>
               </StaggerItem>
             );

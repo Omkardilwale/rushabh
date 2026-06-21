@@ -13,6 +13,7 @@ import {
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { JewelryImage } from "@/components/JewelryImage";
+import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
 import {
   formatPrice,
@@ -63,10 +64,12 @@ export function ProductDetail({ id }: { id: number }) {
           </div>
         </div>
 
-        <div className="mx-auto max-w-7xl px-4 py-10 lg:px-8 lg:py-16">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-10 lg:px-8 lg:py-16">
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
             <ScrollReveal>
-              <div className="relative aspect-square overflow-hidden rounded-3xl bg-cream shadow-lg">
+              <JharokhaFrame tone="cream" className="shadow-lg">
+              <div className="jharokha-media relative aspect-square bg-cream">
+                <HeritageCardTopBand />
                 <JewelryImage
                   src={product.image}
                   alt={product.name}
@@ -79,6 +82,7 @@ export function ProductDetail({ id }: { id: number }) {
                   </span>
                 )}
               </div>
+              </JharokhaFrame>
             </ScrollReveal>
 
             <ScrollReveal delay={0.1}>
@@ -186,9 +190,10 @@ export function ProductDetail({ id }: { id: number }) {
                   <Link
                     key={item.id}
                     href={`/shop/${item.id}`}
-                    className="group overflow-hidden rounded-2xl bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
                   >
-                    <div className="relative aspect-square bg-cream">
+                  <JharokhaFrame tone="white" className="group transition-all hover:-translate-y-1 hover:shadow-md">
+                    <div className="jharokha-media relative aspect-square bg-cream">
+                      <HeritageCardTopBand />
                       <JewelryImage
                         src={item.image}
                         alt={item.name}
@@ -196,7 +201,7 @@ export function ProductDetail({ id }: { id: number }) {
                         className="transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
-                    <div className="p-4">
+                    <div className="border-t border-gold/25 p-4">
                       <h3 className="font-serif text-sm font-medium line-clamp-2">
                         {item.name}
                       </h3>
@@ -204,6 +209,7 @@ export function ProductDetail({ id }: { id: number }) {
                         {formatPrice(item.price)}
                       </p>
                     </div>
+                  </JharokhaFrame>
                   </Link>
                 ))}
               </div>

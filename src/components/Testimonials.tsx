@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
 import { testimonials } from "@/lib/data";
-import { OrnamentSticker } from "./effects/OrnamentStickers";
+import { JharokhaFrame } from "@/components/ui/JharokhaFrame";
 import { ScrollReveal } from "./effects/ScrollReveal";
 
 export function Testimonials() {
@@ -58,10 +58,7 @@ export function Testimonials() {
 
   return (
     <section className="relative overflow-hidden bg-ivory py-24">
-      <OrnamentSticker variant="spark" className="absolute left-12 top-20" size={32} />
-      <OrnamentSticker variant="spark" className="absolute right-16 bottom-24" size={24} delay={1} />
-
-      <div className="mx-auto max-w-4xl px-4 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-4xl px-4 lg:px-8">
         <ScrollReveal className="mb-14 text-center">
           <p className="text-sm font-medium uppercase tracking-[0.25em] text-gold-dark">
             From Our Patrons
@@ -76,7 +73,9 @@ export function Testimonials() {
             <Quote className="h-16 w-16" />
           </div>
 
-          <div className="relative min-h-[280px] overflow-hidden rounded-3xl border border-gold/20 bg-white p-10 shadow-xl md:p-14">
+          <JharokhaFrame tone="white" className="relative min-h-[280px] shadow-xl">
+            <div className="border-b border-gold/25" aria-hidden="true" />
+            <div className="p-10 md:p-14">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.blockquote
                 key={active}
@@ -105,7 +104,9 @@ export function Testimonials() {
                 </footer>
               </motion.blockquote>
             </AnimatePresence>
-          </div>
+            </div>
+            <div className="border-t border-gold/25" aria-hidden="true" />
+          </JharokhaFrame>
 
           <div className="mt-8 flex items-center justify-center gap-6">
             <button

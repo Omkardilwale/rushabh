@@ -9,6 +9,7 @@ import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion"
 import { Heart, SlidersHorizontal, Star, X } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
 import { OrnamentSticker } from "@/components/effects/OrnamentStickers";
 import { ParallaxLayer } from "@/components/effects/ParallaxLayer";
 import { categories, formatPrice, products } from "@/lib/data";
@@ -147,7 +148,7 @@ function ShopPageContent() {
           </motion.div>
         </div>
 
-        <div className="mx-auto max-w-7xl px-4 py-10 lg:px-8">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-10 lg:px-8">
           {hasUrlFilters && (
             <div className="mb-6 flex flex-wrap items-center gap-3">
               <span className="rounded-full border border-gold/30 bg-cream px-4 py-1.5 text-sm font-medium text-maroon">
@@ -187,7 +188,7 @@ function ShopPageContent() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="sticky top-36 space-y-8 rounded-2xl border border-gold/20 bg-white p-6 shadow-sm"
+                className="sticky top-36 space-y-8 rounded-xl border border-gold/30 bg-white p-6 shadow-sm lg:sticky lg:top-36"
               >
                 <div>
                   <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-maroon">
@@ -288,6 +289,7 @@ function ShopPageContent() {
                   >
                     {filteredProducts.map((product) => (
                       <Link key={product.id} href={`/shop/${product.id}`}>
+                      <JharokhaFrame tone="white" className="group transition-shadow hover:shadow-md">
                       <motion.article
                         variants={{
                           hidden: { opacity: 0, y: 24, scale: 0.96 },
@@ -301,14 +303,14 @@ function ShopPageContent() {
                             },
                           },
                         }}
-                        layout
-                        className="group overflow-hidden rounded-2xl bg-white shadow-sm"
+                        className="relative"
                         whileHover={{
                           y: -6,
                           boxShadow: "0 20px 40px rgba(107,29,58,0.1)",
                         }}
                       >
-                        <div className="relative aspect-square overflow-hidden bg-cream">
+                        <div className="jharokha-media relative aspect-square bg-cream">
+                          <HeritageCardTopBand />
                           <JewelryImage
                             src={product.image}
                             alt={product.name}
@@ -329,7 +331,7 @@ function ShopPageContent() {
                             <Heart className="h-4 w-4" />
                           </button>
                         </div>
-                        <div className="p-4">
+                        <div className="border-t border-gold/25 p-4">
                           <p className="text-[10px] font-medium uppercase tracking-wider text-gold-dark">
                             {product.category} · {product.metal}
                           </p>
@@ -354,6 +356,7 @@ function ShopPageContent() {
                           </div>
                         </div>
                       </motion.article>
+                      </JharokhaFrame>
                       </Link>
                     ))}
                   </motion.div>
