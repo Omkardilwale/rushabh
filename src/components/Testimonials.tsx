@@ -3,12 +3,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
-import { testimonials } from "@/lib/data";
+import { useSiteContent } from "@/context/ContentContext";
 import { JharokhaFrame } from "@/components/ui/JharokhaFrame";
 import { RoyalBackground } from "./effects/RoyalBackground";
 import { ScrollReveal } from "./effects/ScrollReveal";
 
 export function Testimonials() {
+  const { content } = useSiteContent();
+  const testimonials = content.testimonials;
+  const copy = content.sections.testimonials;
   const [active, setActive] = useState(0);
   const [direction, setDirection] = useState(1);
 
@@ -63,10 +66,10 @@ export function Testimonials() {
       <div className="relative z-10 mx-auto max-w-4xl px-4 lg:px-8">
         <ScrollReveal className="mb-14 text-center">
           <p className="text-sm font-medium uppercase tracking-[0.25em] text-gold-dark">
-            From Our Patrons
+            {copy.eyebrow}
           </p>
           <h2 className="mt-2 font-serif text-4xl font-light text-maroon md:text-5xl">
-            Customer Stories
+            {copy.heading}
           </h2>
         </ScrollReveal>
 

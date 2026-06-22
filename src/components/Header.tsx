@@ -6,32 +6,20 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Heart, Menu, Search, ShoppingBag, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { useSiteContent } from "@/context/ContentContext";
 import { useMounted } from "@/hooks/useMounted";
 import { formatPrice } from "@/lib/data";
-import { siteConfig } from "@/lib/site-config";
-import { storeSettings } from "@/lib/store-settings";
 import { GoldRateTicker } from "./GoldRateTicker";
-
-const navLinks = [
-  { label: "Shop All", href: "/shop" },
-  { label: "Gold", href: "/shop?metal=gold" },
-  { label: "Diamond", href: "/shop?metal=diamond" },
-  { label: "Bridal", href: "/shop?occasion=bridal" },
-  { label: "Collections", href: "/#collections" },
-  { label: "Stores", href: "/#stores" },
-];
-
-const mobileExtras = [
-  { label: "New Arrivals", href: "/shop" },
-  { label: "Book Appointment", href: "/#consultation" },
-  { label: "Video Consultation", href: "/#consultation" },
-];
 
 export function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const { itemCount, openCart } = useCart();
   const mounted = useMounted();
+  const { content } = useSiteContent();
+  const { site, store, navigation } = content;
+  const navLinks = navigation.primary;
+  const mobileExtras = navigation.mobileExtras;
 
   useEffect(() => {
     setMenuOpen(false);
@@ -69,14 +57,14 @@ export function Header() {
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 400 }}
               >
-                <span className="font-serif text-lg font-bold text-maroon-dark">R</span>
+                <span className="font-serif text-lg font-bold text-maroon-dark">{site.logoLetter}</span>
               </motion.div>
               <div className="hidden sm:block">
                 <p className="font-serif text-xl font-semibold tracking-wide text-maroon">
-                  {siteConfig.shortName}
+                  {site.shortName}
                 </p>
                 <p className="text-[10px] uppercase tracking-[0.25em] text-gold-dark">
-                  {siteConfig.tagline}
+                  {site.tagline}
                 </p>
               </div>
             </Link>
@@ -88,7 +76,7 @@ export function Header() {
                 link.href === "/shop" ? pathname === "/shop" : pathname === link.href;
               return (
                 <Link
-                  key={link.href}
+                  key={link.label}
                   href={link.href}
                   className="relative text-sm font-medium text-foreground/80 transition-colors hover:text-maroon"
                 >
@@ -163,7 +151,7 @@ export function Header() {
               <div className="mx-auto max-w-7xl px-4 py-4">
                 <ul className="space-y-1">
                   {navLinks.map((link) => (
-                    <li key={link.href}>
+                    <li key={link.label}>
                       <Link
                         href={link.href}
                         onClick={handleNavClick}
@@ -196,30 +184,21 @@ export function Header() {
 
       <div className="hidden border-b border-gold/10 bg-cream/50 lg:block">
         <div className="mx-auto flex max-w-7xl items-center justify-center gap-8 px-8 py-2">
-          <Link
-            href="/shop"
-            className="text-xs font-medium uppercase tracking-wider text-maroon hover:text-gold-dark"
-          >
-            New Arrivals
-          </Link>
-          <span className="text-gold/40">|</span>
-          <Link
-            href="/#consultation"
-            className="text-xs font-medium uppercase tracking-wider text-maroon hover:text-gold-dark"
-          >
-            Book Appointment
-          </Link>
-          <span className="text-gold/40">|</span>
-          <Link
-            href="/#consultation"
-            className="text-xs font-medium uppercase tracking-wider text-maroon hover:text-gold-dark"
-          >
-            Video Consultation
-          </Link>
+          {navigation.secondary.map((link, i) => (
+            <span key={link.label} className="flex items-center gap-8">
+              {i > 0 && <span className="text-gold/40">|</span>}
+              <Link
+                href={link.href}
+                className="text-xs font-medium uppercase tracking-wider text-maroon hover:text-gold-dark"
+              >
+                {link.label}
+              </Link>
+            </span>
+          ))}
           <span className="text-gold/40">|</span>
           <span className="text-xs text-foreground/60">
-            Use code <strong className="text-maroon">{storeSettings.promo.code}</strong> for{" "}
-            {formatPrice(storeSettings.promo.discount)} off
+            Use code <strong className="text-maroon">{store.promo.code}</strong> for{" "}
+            {formatPrice(store.promo.discount)} off
           </span>
         </div>
       </div>

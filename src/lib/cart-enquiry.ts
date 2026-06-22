@@ -1,6 +1,6 @@
-import { formatPrice } from "./data";
-import { siteConfig } from "./site-config";
-import { buildMailtoUrl, buildWhatsAppUrl } from "./contact-links";
+import { getEnquiryEmail, getWhatsappNumber } from "./contact";
+import { formatPrice, getSiteContentSync } from "./data";
+import { getSiteConfig } from "./site-config";
 
 export type EnquiryLine = {
   name: string;
@@ -10,6 +10,8 @@ export type EnquiryLine = {
 };
 
 export function buildCartEnquiryText(lines: EnquiryLine[], total: number): string {
+  const { enquiry } = getSiteContentSync();
+  const siteName = getSiteConfig().name;
   const itemsText = lines
     .map(
       (line, i) =>
@@ -17,17 +19,26 @@ export function buildCartEnquiryText(lines: EnquiryLine[], total: number): strin
     )
     .join("\n");
 
-  return `Hello ${siteConfig.name},
+  return `Hello ${siteName},
 
-I would like to enquire about the following items:
+${enquiry.cartGreeting}
 
 ${itemsText}
 
 Estimated total: ${formatPrice(total)}
 
-Please share availability, pricing, and delivery details.
-
-Thank you!`;
+${enquiry.cartClosing}`;
 }
 
-export { buildMailtoUrl, buildWhatsAppUrl };
+export function buildWhatsAppUrl(message = ""): string {
+  const whatsappNumber = getWhatsappNumber();
+  const text = encodeURIComponent(message);
+  if (whatsappNumber) {
+    return `https://wa.me/${whatsappNumber}?text=${text}`;
+  }
+  return `https://api.whatsapp.com/send?text=${text}`;
+}
+
+export function buildMailtoUrl(subject: string, body = ""): string {
+  return `mailto:${getEnquiryEmail()}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}

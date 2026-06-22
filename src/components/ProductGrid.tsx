@@ -5,7 +5,9 @@ import { useRef } from "react";
 import { JewelryImage } from "@/components/JewelryImage";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ChevronLeft, ChevronRight, Heart, Star } from "lucide-react";
-import { formatPrice, products } from "@/lib/data";
+import { formatPrice } from "@/lib/data";
+import type { Product } from "@/lib/content/types";
+import { useSiteContent } from "@/context/ContentContext";
 import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
 import { RoyalBackground } from "./effects/RoyalBackground";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "./effects/ScrollReveal";
@@ -13,7 +15,7 @@ import { ScrollReveal, StaggerContainer, StaggerItem } from "./effects/ScrollRev
 function ProductCard({
   product,
 }: {
-  product: (typeof products)[0];
+  product: Product;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
@@ -108,6 +110,9 @@ function ProductCard({
 
 export function ProductGrid() {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { content } = useSiteContent();
+  const products = content.products;
+  const copy = content.sections.productGrid;
 
   const scroll = (dir: "left" | "right") => {
     const el = scrollRef.current;
@@ -126,14 +131,14 @@ export function ProductGrid() {
         <ScrollReveal className="mb-12 flex items-end justify-between">
           <div className="text-center md:text-left">
             <p className="text-sm font-medium uppercase tracking-[0.25em] text-gold-dark">
-              Trending Now
+              {copy.eyebrow}
             </p>
             <h2 className="mt-2 font-serif text-4xl font-light text-maroon md:text-5xl">
-              Top Sellers
+              {copy.heading}
             </h2>
-            <p className="mt-4 max-w-xl text-foreground/60">
-              Products our customers love the most
-            </p>
+            {copy.subtitle && (
+              <p className="mt-4 max-w-xl text-foreground/60">{copy.subtitle}</p>
+            )}
           </div>
 
           <div className="hidden gap-2 md:flex">

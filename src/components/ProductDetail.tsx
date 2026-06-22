@@ -17,16 +17,18 @@ import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFram
 import { RoyalBackground } from "@/components/effects/RoyalBackground";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
 import { useCart } from "@/context/CartContext";
+import { useSiteContent } from "@/context/ContentContext";
 import {
   formatPrice,
   getProductById,
   getRelatedProducts,
-  products,
 } from "@/lib/data";
 
 export function ProductDetail({ id }: { id: number }) {
   const product = getProductById(id);
   const { addToCart } = useCart();
+  const { content } = useSiteContent();
+  const productDetail = content.productDetail;
 
   if (!product) {
     return (
@@ -137,10 +139,8 @@ export function ProductDetail({ id }: { id: number }) {
                 )}
 
                 <p className="mt-6 leading-relaxed text-foreground/70">
-                  Handcrafted with precision and certified for purity. This
-                  exquisite {product.metal.toLowerCase()} piece is perfect for
-                  special occasions and everyday elegance. BIS hallmarked with
-                  lifetime exchange available.
+                  {product.description ??
+                    `${productDetail.defaultDescription} This exquisite ${product.metal.toLowerCase()} piece is perfect for special occasions and everyday elegance.`}
                 </p>
 
                 <div className="mt-8 flex flex-wrap gap-4">
@@ -166,11 +166,10 @@ export function ProductDetail({ id }: { id: number }) {
                 </div>
 
                 <div className="mt-10 grid gap-4 sm:grid-cols-3">
-                  {[
-                    { icon: Shield, label: "BIS Hallmarked" },
-                    { icon: Truck, label: "Free Shipping" },
-                    { icon: Star, label: "Lifetime Exchange" },
-                  ].map(({ icon: Icon, label }) => (
+                  {productDetail.trustChips.map((label, i) => {
+                    const icons = [Shield, Truck, Star];
+                    const Icon = icons[i] ?? Shield;
+                    return (
                     <div
                       key={label}
                       className="flex items-center gap-3 rounded-xl border border-gold/20 bg-white p-4"
@@ -180,7 +179,8 @@ export function ProductDetail({ id }: { id: number }) {
                         {label}
                       </span>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </ScrollReveal>
@@ -190,7 +190,7 @@ export function ProductDetail({ id }: { id: number }) {
             <section className="mt-20 border-t border-gold/15 pt-16">
               <ScrollReveal>
                 <h2 className="font-serif text-3xl font-light text-maroon">
-                  You May Also Like
+                  {productDetail.relatedHeading}
                 </h2>
               </ScrollReveal>
               <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4 lg:gap-6">
@@ -228,8 +228,4 @@ export function ProductDetail({ id }: { id: number }) {
       <Footer />
     </>
   );
-}
-
-export function getAllProductIds() {
-  return products.map((p) => p.id);
 }

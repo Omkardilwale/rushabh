@@ -10,21 +10,18 @@ import {
 } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { RoyalBackground } from "./effects/RoyalBackground";
-import { products } from "@/lib/data";
-
-const marqueeItems = [
-  ...products.slice(0, 6).map((p) => p.name),
-  "BIS Hallmarked",
-  "Free Shipping",
-  "Lifetime Exchange",
-  "Handcrafted in India",
-  ...products.slice(0, 6).map((p) => p.name),
-];
+import { useSiteContent } from "@/context/ContentContext";
 
 /** px per second — higher = faster auto slide */
 const AUTO_SCROLL_SPEED = 60;
 
 export function ShowcaseMarquee() {
+  const { content } = useSiteContent();
+  const marqueeItems = [
+    ...content.products.slice(0, 6).map((p) => p.name),
+    ...content.store.marqueeExtras,
+    ...content.products.slice(0, 6).map((p) => p.name),
+  ];
   return (
     <section className="relative overflow-hidden border-y border-gold/15 bg-maroon-dark py-5">
       <div className="absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-maroon-dark to-transparent md:w-24" />
@@ -49,7 +46,8 @@ export function ShowcaseMarquee() {
 }
 
 export function ImageMarquee() {
-  const items = products.slice(0, 8);
+  const { content } = useSiteContent();
+  const items = content.products.slice(0, 8);
   const loopItems = [...items, ...items];
   const trackRef = useRef<HTMLDivElement>(null);
   const loopWidthRef = useRef(0);

@@ -1,8 +1,4 @@
-function env(name: string, fallback = ""): string {
-  const value = process.env[name];
-  if (value === undefined || value.trim() === "") return fallback;
-  return value.trim();
-}
+import { getRuntimeContent } from "@/lib/content/client";
 
 function digitsOnly(value: string): string {
   return value.replace(/\D/g, "");
@@ -16,18 +12,23 @@ function normalizeWhatsAppNumber(raw: string): string {
   return digits;
 }
 
-export const siteConfig = {
-  name: env("NEXT_PUBLIC_SITE_NAME", "Rushabh Jewellers"),
-  shortName: env("NEXT_PUBLIC_SITE_SHORT_NAME", "Rushabh"),
-  tagline: env("NEXT_PUBLIC_SITE_TAGLINE", "Jewellers"),
-  url: env("NEXT_PUBLIC_SITE_URL", "https://rushabh-website.vercel.app"),
-  description: env(
-    "NEXT_PUBLIC_SITE_DESCRIPTION",
-    "Shop exquisite gold and diamond jewellery online. BIS hallmarked, handcrafted designs for weddings, festivals, and everyday elegance.",
-  ),
-  enquiryEmail: env("NEXT_PUBLIC_ENQUIRY_EMAIL", "omkar.dilwale.od@gmail.com"),
-  whatsappNumber: normalizeWhatsAppNumber(
-    env("NEXT_PUBLIC_WHATSAPP_NUMBER", "8830688733"),
-  ),
-  contactPhone: digitsOnly(env("NEXT_PUBLIC_CONTACT_PHONE")),
-} as const;
+export function getSiteConfig() {
+  const { site, contact } = getRuntimeContent();
+  return {
+    name: site.name,
+    shortName: site.shortName,
+    tagline: site.tagline,
+    url: site.url,
+    description: site.description,
+    enquiryEmail: contact.enquiryEmail,
+    whatsappNumber: normalizeWhatsAppNumber(contact.whatsappNumber),
+    contactPhone: digitsOnly(contact.contactPhone),
+  } as const;
+}
+
+/** @deprecated Use getSiteConfig() */
+export const siteConfig = new Proxy({} as ReturnType<typeof getSiteConfig>, {
+  get(_target, prop) {
+    return getSiteConfig()[prop as keyof ReturnType<typeof getSiteConfig>];
+  },
+});

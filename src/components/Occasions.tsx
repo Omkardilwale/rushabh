@@ -9,7 +9,7 @@ import {
   Sparkles,
   type LucideIcon,
 } from "lucide-react";
-import { occasions } from "@/lib/data";
+import { useSiteContent } from "@/context/ContentContext";
 import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
 import { RoyalBackground } from "./effects/RoyalBackground";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "./effects/ScrollReveal";
@@ -51,20 +51,23 @@ const occasionStyles: Record<string, { gradient: string; accent: string }> = {
 };
 
 export function Occasions() {
+  const { content } = useSiteContent();
+  const { occasions } = content;
+  const copy = content.sections.occasions;
   return (
     <section className="relative overflow-hidden bg-cream py-24">
       <RoyalBackground density="normal" />
       <div className="relative z-10 mx-auto max-w-7xl px-4 lg:px-8">
         <ScrollReveal className="mb-14 text-center">
           <p className="text-sm font-medium uppercase tracking-[0.25em] text-gold-dark">
-            For Every Moment
+            {copy.eyebrow}
           </p>
           <h2 className="mt-2 font-serif text-4xl font-light text-maroon md:text-5xl">
-            Shop for Occasions
+            {copy.heading}
           </h2>
-          <p className="mx-auto mt-4 max-w-lg text-foreground/60">
-            Find the perfect piece for life&apos;s most cherished celebrations
-          </p>
+          {copy.subtitle && (
+            <p className="mx-auto mt-4 max-w-lg text-foreground/60">{copy.subtitle}</p>
+          )}
         </ScrollReveal>
 
         <StaggerContainer

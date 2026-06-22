@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Mail, MessageCircle, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { useEffect } from "react";
 import { useCart } from "@/context/CartContext";
+import { useSiteContent } from "@/context/ContentContext";
 import { JewelryImage } from "@/components/JewelryImage";
 import {
   buildCartEnquiryText,
@@ -12,8 +13,8 @@ import {
   buildWhatsAppUrl,
 } from "@/lib/cart-enquiry";
 import { formatPrice } from "@/lib/data";
-import { enquiryEmail } from "@/lib/contact";
-import { siteConfig } from "@/lib/site-config";
+import { getEnquiryEmail } from "@/lib/contact";
+import { getSiteConfig } from "@/lib/site-config";
 
 export function CartDrawer() {
   const {
@@ -26,6 +27,7 @@ export function CartDrawer() {
     removeFromCart,
     clearCart,
   } = useCart();
+  const { content } = useSiteContent();
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -43,7 +45,7 @@ export function CartDrawer() {
   const enquiryText = buildCartEnquiryText(enquiryLines, subtotal);
   const whatsappUrl = buildWhatsAppUrl(enquiryText);
   const mailtoUrl = buildMailtoUrl(
-    `Jewellery enquiry from ${siteConfig.name}`,
+    `${content.enquiry.cartSubject} ${getSiteConfig().name}`,
     enquiryText,
   );
 
@@ -210,7 +212,7 @@ export function CartDrawer() {
                       Enquire via Email
                     </a>
                     <p className="text-center text-xs text-foreground/45">
-                      Enquiries go to {enquiryEmail}
+                      Enquiries go to {getEnquiryEmail()}
                     </p>
                   </div>
 

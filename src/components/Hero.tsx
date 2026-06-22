@@ -2,54 +2,18 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { JewelryImage } from "@/components/JewelryImage";
-import { images } from "@/lib/images";
 import Link from "next/link";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { useSiteContent } from "@/context/ContentContext";
 import { ParallaxLayer } from "./effects/ParallaxLayer";
 import { OrnamentSticker } from "./effects/OrnamentStickers";
 import { SparkleField } from "./effects/SparkleField";
 
-const slides = [
-  {
-    image: images.hero.heritage,
-    tagline: "Crafted with Heritage",
-    title: "Timeless",
-    accent: "Elegance",
-    subtitle: "in Every Piece",
-    description:
-      "Discover handcrafted gold and diamond jewellery — from bridal masterpieces to everyday luxury.",
-  },
-  {
-    image: images.hero.bridal,
-    tagline: "Bridal Collection 2025",
-    title: "Where Love",
-    accent: "Meets",
-    subtitle: "Forever Gold",
-    description:
-      "Exquisite bridal sets designed to make your special day unforgettable. BIS hallmarked purity.",
-  },
-  {
-    image: images.hero.modern,
-    tagline: "Modern Muses",
-    title: "Everyday",
-    accent: "Luxury",
-    subtitle: "Redefined",
-    description:
-      "Lightweight contemporary designs that transition seamlessly from office to evening.",
-  },
-  {
-    image: images.hero.traditional,
-    tagline: "Heritage Gold",
-    title: "Artistry",
-    accent: "Passed",
-    subtitle: "Through Generations",
-    description:
-      "Traditional craftsmanship meets modern elegance in every meticulously detailed piece.",
-  },
-];
-
 export function Hero() {
+  const { content } = useSiteContent();
+  const { hero } = content;
+  const slides = hero.slides;
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(1);
   const sectionRef = useRef<HTMLElement>(null);
@@ -73,12 +37,12 @@ export function Hero() {
   const next = useCallback(() => {
     setDirection(1);
     setCurrent((prev) => (prev + 1) % slides.length);
-  }, []);
+  }, [slides.length]);
 
   const prev = useCallback(() => {
     setDirection(-1);
     setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
-  }, []);
+  }, [slides.length]);
 
   useEffect(() => {
     const timer = setInterval(next, 6000);
@@ -202,19 +166,19 @@ export function Hero() {
                 className="mt-10 flex flex-wrap gap-4"
               >
                 <Link
-                  href="/shop"
+                  href={hero.primaryCta.href}
                   className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full gold-gradient px-8 py-3.5 text-sm font-semibold uppercase tracking-wider text-maroon-dark"
                 >
                   <span className="absolute inset-0 shimmer opacity-0 transition-opacity group-hover:opacity-100" />
-                  <span className="relative">Shop Collection</span>
+                  <span className="relative">{hero.primaryCta.label}</span>
                   <ArrowRight className="relative h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
                 <Link
-                  href="#consultation"
+                  href={hero.secondaryCta.href}
                   className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-8 py-3.5 text-sm font-semibold uppercase tracking-wider text-white backdrop-blur-md transition-all hover:border-gold/50 hover:bg-white/15"
                 >
                   <Play className="h-4 w-4 fill-current" />
-                  Virtual Try-On
+                  {hero.secondaryCta.label}
                 </Link>
               </motion.div>
             </motion.div>
@@ -226,11 +190,7 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.6 }}
           >
-            {[
-              { value: "25+", label: "Years Legacy" },
-              { value: "50K+", label: "Happy Customers" },
-              { value: "100%", label: "BIS Certified" },
-            ].map((stat) => (
+            {hero.stats.map((stat) => (
               <div key={stat.label}>
                 <p className="font-serif text-3xl font-semibold text-gold-light">
                   {stat.value}
@@ -252,28 +212,19 @@ export function Hero() {
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
-
           <div className="flex gap-2">
             {slides.map((_, i) => (
               <button
                 key={i}
                 type="button"
                 onClick={() => goTo(i)}
-                className="group relative h-1 overflow-hidden rounded-full bg-white/20 transition-all"
-                style={{ width: i === current ? 40 : 20 }}
+                className={`h-2 rounded-full transition-all ${
+                  i === current ? "w-8 bg-gold-light" : "w-2 bg-white/40"
+                }`}
                 aria-label={`Go to slide ${i + 1}`}
-              >
-                {i === current && (
-                  <motion.div
-                    className="absolute inset-0 rounded-full bg-gold"
-                    layoutId="activeSlide"
-                    transition={{ duration: 0.3 }}
-                  />
-                )}
-              </button>
+              />
             ))}
           </div>
-
           <button
             type="button"
             onClick={next}
@@ -283,17 +234,6 @@ export function Hero() {
             <ChevronRight className="h-5 w-5" />
           </button>
         </div>
-
-        <motion.div
-          className="absolute bottom-8 right-8 hidden flex-col items-center gap-2 lg:flex"
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 [writing-mode:vertical-lr]">
-            Scroll
-          </span>
-          <div className="h-12 w-px bg-gradient-to-b from-gold/60 to-transparent" />
-        </motion.div>
       </motion.div>
     </section>
   );

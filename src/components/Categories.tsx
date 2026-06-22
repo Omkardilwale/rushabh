@@ -5,13 +5,16 @@ import { JewelryImage } from "@/components/JewelryImage";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { categories } from "@/lib/data";
+import { useSiteContent } from "@/context/ContentContext";
 import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
 import { RoyalBackground } from "./effects/RoyalBackground";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "./effects/ScrollReveal";
 
 export function Categories() {
   const [hovered, setHovered] = useState<string | null>(null);
+  const { content } = useSiteContent();
+  const { categories } = content;
+  const copy = content.sections.categories;
 
   return (
     <section className="relative overflow-hidden bg-ivory py-24">
@@ -19,14 +22,14 @@ export function Categories() {
       <div className="relative z-10 mx-auto max-w-7xl px-4 lg:px-8">
         <ScrollReveal className="mb-14 text-center">
           <p className="text-sm font-medium uppercase tracking-[0.25em] text-gold-dark">
-            Explore
+            {copy.eyebrow}
           </p>
           <h2 className="mt-2 font-serif text-4xl font-light text-maroon md:text-5xl">
-            Shop by Category
+            {copy.heading}
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-foreground/60">
-            Infinite designs, handcrafted for utmost brilliance.
-          </p>
+          {copy.subtitle && (
+            <p className="mx-auto mt-4 max-w-xl text-foreground/60">{copy.subtitle}</p>
+          )}
         </ScrollReveal>
 
         <StaggerContainer className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6 lg:gap-5">
@@ -72,10 +75,10 @@ export function Categories() {
 
         <ScrollReveal className="mt-14 text-center" delay={0.2}>
           <Link
-            href="/shop"
+            href={copy.ctaHref ?? "/shop"}
             className="group inline-flex items-center gap-2 rounded-full border border-maroon/20 bg-white px-8 py-3 text-sm font-semibold uppercase tracking-wider text-maroon shadow-sm transition-all hover:border-gold hover:shadow-md"
           >
-            View All Categories
+            {copy.ctaLabel ?? "View All Categories"}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </ScrollReveal>

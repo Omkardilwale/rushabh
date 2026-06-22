@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { RefreshCw, RotateCcw, Shield, Truck } from "lucide-react";
-import { trustFeatures } from "@/lib/data";
+import { useSiteContent } from "@/context/ContentContext";
 
 const iconMap = {
   shield: Shield,
@@ -12,6 +12,8 @@ const iconMap = {
 };
 
 export function TrustBadges() {
+  const { content } = useSiteContent();
+  const trustFeatures = content.trustFeatures;
   return (
     <section className="relative overflow-hidden border-y border-gold/20 bg-maroon py-14">
       <div className="absolute inset-0 opacity-5">

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { JewelryImage } from "@/components/JewelryImage";
-import { images } from "@/lib/images";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
 import { Heart, SlidersHorizontal, Star, X } from "lucide-react";
 import { Footer } from "@/components/Footer";
@@ -13,20 +12,13 @@ import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFram
 import { RoyalBackground } from "@/components/effects/RoyalBackground";
 import { OrnamentSticker } from "@/components/effects/OrnamentStickers";
 import { ParallaxLayer } from "@/components/effects/ParallaxLayer";
-import { categories, formatPrice, products } from "@/lib/data";
+import { useSiteContent } from "@/context/ContentContext";
+import { formatPrice } from "@/lib/data";
 import {
   getShopFilterLabel,
   matchesShopUrlFilters,
   parseShopSearchParams,
 } from "@/lib/shop-filters";
-
-const metalFilters = ["All", "18K Gold", "22K Gold", "Platinum"];
-const priceFilters = [
-  { label: "All Prices", min: 0, max: Infinity },
-  { label: "Under ₹30,000", min: 0, max: 30000 },
-  { label: "₹30,000 - ₹60,000", min: 30000, max: 60000 },
-  { label: "Above ₹60,000", min: 60000, max: Infinity },
-];
 
 export default function ShopPage() {
   return (
@@ -47,6 +39,13 @@ function ShopPageFallback() {
 }
 
 function ShopPageContent() {
+  const { content } = useSiteContent();
+  const { categories, products, shop } = content;
+  const metalFilters = shop.metalFilters;
+  const priceFilters = shop.priceFilters.map((f) => ({
+    ...f,
+    max: f.max ?? Infinity,
+  }));
   const searchParams = useSearchParams();
   const urlFilters = useMemo(
     () => parseShopSearchParams(searchParams),
@@ -112,7 +111,7 @@ function ShopPageContent() {
             style={{ y: heroY, scale: heroScale }}
           >
             <JewelryImage
-              src={images.shopBanner}
+              src={shop.bannerImage}
               alt=""
               fill
             />
@@ -133,7 +132,7 @@ function ShopPageContent() {
             className="relative"
           >
             <p className="text-sm font-medium uppercase tracking-[0.3em] text-gold-light">
-              Our Collection
+              {content.sections.shop.heading}
             </p>
             <h1 className="mt-3 font-serif text-4xl font-light text-white md:text-6xl">
               {activeUrlLabel ?? "Shop All Jewellery"}
@@ -265,10 +264,10 @@ function ShopPageContent() {
                     className="rounded-2xl border border-gold/20 bg-white p-16 text-center"
                   >
                     <p className="font-serif text-2xl text-maroon">
-                      No products found
+                      {shop.emptyTitle}
                     </p>
                     <p className="mt-2 text-foreground/60">
-                      Try adjusting your filters
+                      {shop.emptyMessage}
                     </p>
                     {hasUrlFilters && (
                       <Link

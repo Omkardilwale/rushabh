@@ -1,15 +1,30 @@
-import { goldRate } from "@/lib/data";
-import { storeSettings } from "@/lib/store-settings";
+"use client";
+
+import { useSiteContent } from "@/context/ContentContext";
+import { formatPrice } from "@/lib/data";
 
 export function GoldRateTicker() {
+  const { content } = useSiteContent();
+  const {
+    goldRate,
+    silverRate,
+    diamondRateLabel,
+    freeShippingThreshold,
+    tickerExtras,
+    ratesMode,
+  } = content.store;
+
   const items = [
-    `22K Gold: ₹${goldRate.rate22k.toLocaleString("en-IN")}/g`,
-    `18K Gold: ₹${goldRate.rate18k.toLocaleString("en-IN")}/g`,
-    "BIS Hallmarked Jewellery",
-    `Free Insured Shipping on orders above ${storeSettings.freeShippingThreshold.toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })}`,
-    "Lifetime Exchange Available",
-    `Rates updated: ${goldRate.updatedAt}`,
-  ];
+    `22K Gold: ${formatPrice(goldRate.rate22k)}/g`,
+    `18K Gold: ${formatPrice(goldRate.rate18k)}/g`,
+    silverRate.rate999 > 0
+      ? `Silver 999: ${formatPrice(silverRate.rate999)}/g`
+      : null,
+    diamondRateLabel.trim() || null,
+    ...tickerExtras,
+    `Free Insured Shipping on orders above ${formatPrice(freeShippingThreshold)}`,
+    `Rates updated: ${goldRate.updatedAt}${ratesMode === "auto" ? " (auto)" : ""}`,
+  ].filter((item): item is string => Boolean(item));
 
   const tickerContent = [...items, ...items].join("   •   ");
 

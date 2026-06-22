@@ -1,33 +1,18 @@
+"use client";
+
 import Link from "next/link";
 import { Globe, MapPin, Share2 } from "lucide-react";
-import { siteConfig } from "@/lib/site-config";
-import { storeSettings } from "@/lib/store-settings";
-
-const footerLinks = {
-  shop: [
-    { label: "Gold Jewellery", href: "/shop?metal=gold" },
-    { label: "Diamond Jewellery", href: "/shop?metal=diamond" },
-    { label: "Bridal Collection", href: "/shop?occasion=bridal" },
-    { label: "New Arrivals", href: "/shop" },
-    { label: "Gifts", href: "/shop?occasion=gifting" },
-  ],
-  help: [
-    { label: "Track Order", href: "#" },
-    { label: "Shipping Info", href: "#" },
-    { label: "Returns & Exchange", href: "#" },
-    { label: "Ring Size Guide", href: "#" },
-    { label: "Jewellery Care", href: "#" },
-  ],
-  company: [
-    { label: "About Us", href: "#" },
-    { label: "Our Stores", href: "#stores" },
-    { label: "Careers", href: "#" },
-    { label: "Blog", href: "#" },
-    { label: "Contact", href: "#" },
-  ],
-};
+import { useSiteContent } from "@/context/ContentContext";
 
 export function Footer() {
+  const { content } = useSiteContent();
+  const { site, store, footer } = content;
+  const footerLinks = {
+    shop: footer.shop,
+    help: footer.help,
+    company: footer.company,
+  };
+
   return (
     <footer id="stores" className="relative overflow-hidden bg-maroon-dark text-white/70">
       <div className="relative mx-auto max-w-7xl px-4 py-16 lg:px-8">
@@ -36,22 +21,19 @@ export function Footer() {
             <div className="flex items-center gap-2">
               <div className="flex h-10 w-10 items-center justify-center rounded-full gold-gradient">
                 <span className="font-serif text-lg font-bold text-maroon-dark">
-                  R
+                  {site.logoLetter}
                 </span>
               </div>
               <div>
                 <p className="font-serif text-xl font-semibold text-white">
-                  {siteConfig.shortName}
+                  {site.shortName}
                 </p>
                 <p className="text-[10px] uppercase tracking-[0.25em] text-gold-light">
-                  {siteConfig.tagline}
+                  {site.tagline}
                 </p>
               </div>
             </div>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed">
-              Celebrating the rich heritage of Indian jewellery with exquisite
-              craftsmanship and timeless design. BIS hallmarked, trusted quality.
-            </p>
+            <p className="mt-4 max-w-sm text-sm leading-relaxed">{site.brandBlurb}</p>
             <div className="mt-6 flex gap-3">
               {[Share2, Globe, Share2].map((Icon, i) => (
                 <a
@@ -92,10 +74,9 @@ export function Footer() {
             <div className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-gold-light" />
               <div>
-                <p className="font-medium text-white">Find a Store Near You</p>
+                <p className="font-medium text-white">{footer.storeHeading}</p>
                 <p className="text-sm">
-                  {storeSettings.storeLocation}. Visit for a premium shopping
-                  experience.
+                  {store.storeLocation}. Visit for a premium shopping experience.
                 </p>
               </div>
             </div>
@@ -103,7 +84,7 @@ export function Footer() {
               type="button"
               className="shrink-0 rounded-full border border-gold/40 px-6 py-2.5 text-sm font-semibold uppercase tracking-wider text-gold-light transition-colors hover:bg-gold/10"
             >
-              Locate Store
+              {footer.storeCta}
             </button>
           </div>
         </div>
@@ -111,19 +92,14 @@ export function Footer() {
         <div className="mt-12 border-t border-white/10 pt-8">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             <p className="text-xs">
-              © 2026 {siteConfig.name}. All rights
-              reserved.
+              © {site.copyrightYear} {site.name}. All rights reserved.
             </p>
             <div className="flex gap-6 text-xs">
-              <Link href="#" className="hover:text-white">
-                Privacy Policy
-              </Link>
-              <Link href="#" className="hover:text-white">
-                Terms & Conditions
-              </Link>
-              <Link href="#" className="hover:text-white">
-                BIS Certification
-              </Link>
+              {footer.legal.map((link) => (
+                <Link key={link.label} href={link.href} className="hover:text-white">
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </div>
         </div>

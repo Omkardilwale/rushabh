@@ -1,6 +1,4 @@
-import type { products } from "@/lib/data";
-
-export type Product = (typeof products)[number];
+import type { Product } from "@/lib/content/types";
 
 export type ShopUrlFilters = {
   metal: string | null;

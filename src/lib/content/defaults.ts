@@ -1,0 +1,398 @@
+import { images } from "@/lib/images";
+import type { SiteContent } from "./types";
+
+export const defaultSiteContent: SiteContent = {
+  site: {
+    name: "Rushabh Jewellers",
+    shortName: "Rushabh",
+    tagline: "Jewellers",
+    url: "https://rushabh-website.vercel.app",
+    description:
+      "Shop exquisite gold and diamond jewellery online. BIS hallmarked, handcrafted designs for weddings, festivals, and everyday elegance.",
+    copyrightYear: 2026,
+    brandBlurb:
+      "Celebrating the rich heritage of Indian jewellery with exquisite craftsmanship and timeless design. BIS hallmarked, trusted quality.",
+    logoLetter: "R",
+  },
+  contact: {
+    enquiryEmail: "omkar.dilwale.od@gmail.com",
+    whatsappNumber: "8830688733",
+    contactPhone: "",
+  },
+  store: {
+    goldRate: {
+      rate22k: 6850,
+      rate18k: 5620,
+      updatedAt: "Today, 10:30 AM",
+    },
+    silverRate: {
+      rate999: 92,
+      updatedAt: "Today, 10:30 AM",
+    },
+    ratesMode: "manual",
+    ratesLastSyncedAt: "",
+    diamondRateLabel: "Diamond: Price on enquiry",
+    promo: { code: "WELCOME500", discount: 500 },
+    freeShippingThreshold: 25000,
+    storeLocation: "15+ stores across Maharashtra",
+    tickerExtras: [
+      "BIS Hallmarked Jewellery",
+      "Lifetime Exchange Available",
+    ],
+    marqueeExtras: [
+      "BIS Hallmarked",
+      "Free Shipping",
+      "Lifetime Exchange",
+      "Handcrafted in India",
+    ],
+  },
+  navigation: {
+    primary: [
+      { label: "Shop All", href: "/shop" },
+      { label: "Gold", href: "/shop?metal=gold" },
+      { label: "Diamond", href: "/shop?metal=diamond" },
+      { label: "Bridal", href: "/shop?occasion=bridal" },
+      { label: "Collections", href: "/#collections" },
+      { label: "Stores", href: "/#stores" },
+    ],
+    secondary: [
+      { label: "New Arrivals", href: "/shop" },
+      { label: "Book Appointment", href: "/#consultation" },
+      { label: "Video Consultation", href: "/#consultation" },
+    ],
+    mobileExtras: [
+      { label: "New Arrivals", href: "/shop" },
+      { label: "Book Appointment", href: "/#consultation" },
+      { label: "Video Consultation", href: "/#consultation" },
+    ],
+  },
+  footer: {
+    shop: [
+      { label: "Gold Jewellery", href: "/shop?metal=gold" },
+      { label: "Diamond Jewellery", href: "/shop?metal=diamond" },
+      { label: "Bridal Collection", href: "/shop?occasion=bridal" },
+      { label: "New Arrivals", href: "/shop" },
+      { label: "Gifts", href: "/shop?occasion=gifting" },
+    ],
+    help: [
+      { label: "Track Order", href: "#" },
+      { label: "Shipping Info", href: "#" },
+      { label: "Returns & Exchange", href: "#" },
+      { label: "Ring Size Guide", href: "#" },
+      { label: "Jewellery Care", href: "#" },
+    ],
+    company: [
+      { label: "About Us", href: "#" },
+      { label: "Our Stores", href: "#stores" },
+      { label: "Careers", href: "#" },
+      { label: "Blog", href: "#" },
+      { label: "Contact", href: "#" },
+    ],
+    legal: [
+      { label: "Privacy Policy", href: "#" },
+      { label: "Terms & Conditions", href: "#" },
+      { label: "BIS Certification", href: "#" },
+    ],
+    storeHeading: "Find a Store Near You",
+    storeCta: "Locate Store",
+  },
+  hero: {
+    slides: [
+      {
+        image: images.hero.heritage,
+        tagline: "Crafted with Heritage",
+        title: "Timeless",
+        accent: "Elegance",
+        subtitle: "in Every Piece",
+        description:
+          "Discover handcrafted gold and diamond jewellery — from bridal masterpieces to everyday luxury.",
+      },
+      {
+        image: images.hero.bridal,
+        tagline: "Bridal Collection 2025",
+        title: "Where Love",
+        accent: "Meets",
+        subtitle: "Forever Gold",
+        description:
+          "Exquisite bridal sets designed to make your special day unforgettable. BIS hallmarked purity.",
+      },
+      {
+        image: images.hero.modern,
+        tagline: "Modern Muses",
+        title: "Everyday",
+        accent: "Luxury",
+        subtitle: "Redefined",
+        description:
+          "Lightweight contemporary designs that transition seamlessly from office to evening.",
+      },
+      {
+        image: images.hero.traditional,
+        tagline: "Heritage Gold",
+        title: "Artistry",
+        accent: "Passed",
+        subtitle: "Through Generations",
+        description:
+          "Traditional craftsmanship meets modern elegance in every meticulously detailed piece.",
+      },
+    ],
+    stats: [
+      { value: "25+", label: "Years Legacy" },
+      { value: "50K+", label: "Happy Customers" },
+      { value: "100%", label: "BIS Certified" },
+    ],
+    primaryCta: { label: "Shop Collection", href: "/shop" },
+    secondaryCta: { label: "Virtual Try-On", href: "#consultation" },
+  },
+  sections: {
+    categories: {
+      eyebrow: "Explore",
+      heading: "Shop by Category",
+      subtitle: "Infinite designs, handcrafted for utmost brilliance.",
+      ctaLabel: "View All Categories",
+      ctaHref: "/shop",
+    },
+    featuredCollections: {
+      eyebrow: "Curated For You",
+      heading: "Featured Collections",
+    },
+    productGrid: {
+      eyebrow: "Trending Now",
+      heading: "Top Sellers",
+      subtitle: "Products our customers love the most.",
+      ctaLabel: "Explore All",
+      ctaHref: "/shop",
+    },
+    occasions: {
+      eyebrow: "For Every Moment",
+      heading: "Shop for Occasions",
+      subtitle: "Find the perfect piece for life's special moments.",
+      ctaLabel: "Shop Collection",
+      ctaHref: "/shop",
+    },
+    testimonials: {
+      eyebrow: "From Our Patrons",
+      heading: "Customer Stories",
+    },
+    consultation: {
+      eyebrow: "We're Here to Help",
+      heading: "Connect With Us",
+      subtitle:
+        "Our experts are always available to guide you at your convenience.",
+    },
+    shop: {
+      heading: "Our Collection",
+      subtitle: "exquisite designs found",
+    },
+  },
+  consultation: {
+    options: [
+      {
+        type: "video",
+        title: "Video Consultation",
+        description: "Connect with our jewellery experts via live video call",
+        cta: "Schedule Now",
+      },
+      {
+        type: "appointment",
+        title: "Store Appointment",
+        description: "Visit our showroom for a personalized experience",
+        cta: "Book Visit",
+      },
+      {
+        type: "whatsapp",
+        title: "WhatsApp Chat",
+        description: "Get instant answers and recommendations",
+        cta: "Chat Now",
+      },
+      {
+        type: "callback",
+        title: "Call Back",
+        description: "Request a call from our jewellery consultant",
+        cta: "Request Call",
+      },
+    ],
+  },
+  shop: {
+    bannerImage: images.shopBanner,
+    metalFilters: ["All", "18K Gold", "22K Gold", "Platinum"],
+    priceFilters: [
+      { label: "All Prices", min: 0, max: null },
+      { label: "Under ₹30,000", min: 0, max: 30000 },
+      { label: "₹30,000 - ₹60,000", min: 30000, max: 60000 },
+      { label: "Above ₹60,000", min: 60000, max: null },
+    ],
+    emptyTitle: "No products found",
+    emptyMessage: "Try adjusting your filters",
+  },
+  categories: [
+    { name: "Rings", slug: "rings", image: images.categories.rings, count: 240 },
+    { name: "Earrings", slug: "earrings", image: images.categories.earrings, count: 380 },
+    { name: "Necklaces", slug: "necklaces", image: images.categories.necklaces, count: 195 },
+    { name: "Bangles", slug: "bangles", image: images.categories.bangles, count: 156 },
+    { name: "Pendants", slug: "pendants", image: images.categories.pendants, count: 210 },
+    { name: "Mangalsutra", slug: "mangalsutra", image: images.categories.mangalsutra, count: 89 },
+  ],
+  collections: [
+    {
+      name: "Bridal Brilliance",
+      description: "Timeless pieces for your special day",
+      image: images.collections.bridal,
+      tag: "Wedding",
+    },
+    {
+      name: "Modern Muses",
+      description: "Contemporary designs for everyday elegance",
+      image: images.collections.modern,
+      tag: "Daily Wear",
+    },
+    {
+      name: "Heritage Gold",
+      description: "Crafted with traditional artistry",
+      image: images.collections.heritage,
+      tag: "Traditional",
+    },
+  ],
+  products: [
+    {
+      id: 1,
+      name: "Floral Diamond Ring",
+      category: "Rings",
+      price: 45999,
+      originalPrice: 52999,
+      metal: "18K Gold",
+      image: images.products.ringFloral,
+      badge: "Bestseller",
+      rating: 4.9,
+    },
+    {
+      id: 2,
+      name: "Pearl Drop Earrings",
+      category: "Earrings",
+      price: 28500,
+      metal: "22K Gold",
+      image: images.products.earringsPearl,
+      badge: "New",
+      rating: 4.8,
+    },
+    {
+      id: 3,
+      name: "Royal Kundan Necklace",
+      category: "Necklaces",
+      price: 125000,
+      metal: "22K Gold",
+      image: images.products.necklaceRoyal,
+      rating: 5.0,
+    },
+    {
+      id: 4,
+      name: "Classic Gold Bangle Set",
+      category: "Bangles",
+      price: 67800,
+      metal: "22K Gold",
+      image: images.products.banglesClassic,
+      badge: "Trending",
+      rating: 4.7,
+    },
+    {
+      id: 5,
+      name: "Emerald Pendant",
+      category: "Pendants",
+      price: 34200,
+      originalPrice: 38900,
+      metal: "18K Gold",
+      image: images.products.pendantEmerald,
+      rating: 4.6,
+    },
+    {
+      id: 6,
+      name: "Diamond Solitaire Ring",
+      category: "Rings",
+      price: 89000,
+      metal: "Platinum",
+      image: images.products.ringSolitaire,
+      badge: "Premium",
+      rating: 4.9,
+    },
+    {
+      id: 7,
+      name: "Temple Gold Earrings",
+      category: "Earrings",
+      price: 52300,
+      metal: "22K Gold",
+      image: images.products.earringsTemple,
+      rating: 4.8,
+    },
+    {
+      id: 8,
+      name: "Antique Mangalsutra",
+      category: "Mangalsutra",
+      price: 41500,
+      metal: "22K Gold",
+      image: images.products.mangalsutraAntique,
+      badge: "Heritage",
+      rating: 4.9,
+    },
+  ],
+  occasions: [
+    { name: "Wedding", count: "500+ designs" },
+    { name: "Engagement", count: "200+ designs" },
+    { name: "Festivals", count: "350+ designs" },
+    { name: "Gifting", count: "180+ designs" },
+    { name: "Daily Wear", count: "400+ designs" },
+    { name: "Anniversary", count: "150+ designs" },
+  ],
+  trustFeatures: [
+    {
+      title: "BIS Hallmarked",
+      description: "Every piece certified for purity",
+      icon: "shield",
+    },
+    {
+      title: "Lifetime Exchange",
+      description: "Exchange anytime at current gold rate",
+      icon: "refresh",
+    },
+    {
+      title: "Free Shipping",
+      description: "Insured delivery across India",
+      icon: "truck",
+    },
+    {
+      title: "15-Day Returns",
+      description: "Hassle-free return policy",
+      icon: "rotate",
+    },
+  ],
+  testimonials: [
+    {
+      name: "Priya Sharma",
+      location: "Mumbai",
+      text: "The craftsmanship is exceptional. My bridal set was exactly as shown online. Rushabh Jewellers made my wedding truly special.",
+      rating: 5,
+    },
+    {
+      name: "Ananya Reddy",
+      location: "Hyderabad",
+      text: "Beautiful designs and transparent pricing. The video consultation helped me choose the perfect mangalsutra.",
+      rating: 5,
+    },
+    {
+      name: "Rahul Mehta",
+      location: "Delhi",
+      text: "Bought an engagement ring — the quality exceeded expectations. Fast delivery and excellent packaging.",
+      rating: 5,
+    },
+  ],
+  productDetail: {
+    defaultDescription:
+      "Handcrafted with precision and certified for purity. BIS hallmarked with lifetime exchange available.",
+    trustChips: ["BIS Hallmarked", "Free Shipping", "Lifetime Exchange"],
+    relatedHeading: "You May Also Like",
+  },
+  enquiry: {
+    cartGreeting: "I would like to enquire about the following items:",
+    cartClosing:
+      "Please share availability, pricing, and delivery details.\n\nThank you!",
+    cartSubject: "Jewellery enquiry from",
+  },
+};

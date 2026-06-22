@@ -5,21 +5,24 @@ import { JewelryImage } from "@/components/JewelryImage";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { collections } from "@/lib/data";
+import { useSiteContent } from "@/context/ContentContext";
 import { JharokhaFrame } from "@/components/ui/JharokhaFrame";
 import { RoyalBackground } from "./effects/RoyalBackground";
 import { ScrollReveal } from "./effects/ScrollReveal";
 
 export function FeaturedCollections() {
   const [active, setActive] = useState(0);
+  const { content } = useSiteContent();
+  const items = content.collections;
+  const copy = content.sections.featuredCollections;
 
   const next = useCallback(() => {
-    setActive((prev) => (prev + 1) % collections.length);
-  }, []);
+    setActive((prev) => (prev + 1) % items.length);
+  }, [items.length]);
 
   const prev = useCallback(() => {
-    setActive((prev) => (prev - 1 + collections.length) % collections.length);
-  }, []);
+    setActive((prev) => (prev - 1 + items.length) % items.length);
+  }, [items.length]);
 
   useEffect(() => {
     const timer = setInterval(next, 3500);
@@ -33,10 +36,10 @@ export function FeaturedCollections() {
         <ScrollReveal className="mb-12 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
           <div>
             <p className="text-sm font-medium uppercase tracking-[0.25em] text-gold-dark">
-              Curated For You
+              {copy.eyebrow}
             </p>
             <h2 className="mt-2 font-serif text-4xl font-light text-maroon md:text-5xl">
-              Featured Collections
+              {copy.heading}
             </h2>
           </div>
           <Link
@@ -60,8 +63,8 @@ export function FeaturedCollections() {
                 className="absolute inset-0"
               >
                 <JewelryImage
-                  src={collections[active].image}
-                  alt={collections[active].name}
+                  src={items[active].image}
+                  alt={items[active].name}
                   fill
                   priority
                   className="object-cover"
@@ -76,7 +79,7 @@ export function FeaturedCollections() {
                     transition={{ delay: 0.2 }}
                     className="inline-block rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-xs font-medium uppercase tracking-wider text-gold-light backdrop-blur-sm"
                   >
-                    {collections[active].tag}
+                    {items[active].tag}
                   </motion.span>
                   <motion.h3
                     initial={{ opacity: 0, y: 20 }}
@@ -84,7 +87,7 @@ export function FeaturedCollections() {
                     transition={{ delay: 0.3 }}
                     className="mt-4 font-serif text-3xl font-medium text-white md:text-5xl"
                   >
-                    {collections[active].name}
+                    {items[active].name}
                   </motion.h3>
                   <motion.p
                     initial={{ opacity: 0, y: 20 }}
@@ -92,7 +95,7 @@ export function FeaturedCollections() {
                     transition={{ delay: 0.4 }}
                     className="mt-3 max-w-md text-white/70"
                   >
-                    {collections[active].description}
+                    {items[active].description}
                   </motion.p>
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -132,12 +135,12 @@ export function FeaturedCollections() {
               </button>
             </div>
             <p className="text-xs uppercase tracking-wider text-foreground/45">
-              {active + 1} / {collections.length}
+              {active + 1} / {items.length}
             </p>
           </div>
 
           <div className="mt-6 flex justify-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
-            {collections.map((col, i) => (
+            {items.map((col, i) => (
               <button
                 key={col.name}
                 type="button"

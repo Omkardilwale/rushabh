@@ -1,6 +1,7 @@
-import { contactPhone, enquiryEmail, whatsappNumber } from "./contact";
+import { getEnquiryEmail, getWhatsappNumber, getContactPhone } from "./contact";
 
 export function buildWhatsAppUrl(message = ""): string {
+  const whatsappNumber = getWhatsappNumber();
   const text = encodeURIComponent(message);
   if (whatsappNumber) {
     return `https://wa.me/${whatsappNumber}?text=${text}`;
@@ -9,9 +10,10 @@ export function buildWhatsAppUrl(message = ""): string {
 }
 
 export function buildMailtoUrl(subject: string, body = ""): string {
-  return `mailto:${enquiryEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  return `mailto:${getEnquiryEmail()}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 export function buildTelUrl(): string | null {
-  return contactPhone ? `tel:+${contactPhone}` : null;
+  const phone = getContactPhone();
+  return phone ? `tel:+${phone}` : null;
 }
