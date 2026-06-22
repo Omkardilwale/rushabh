@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProductDetail } from "@/components/ProductDetail";
 import { getProductById } from "@/lib/data";
+import { siteConfig } from "@/lib/site-config";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -12,11 +13,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const product = getProductById(Number(id));
 
   if (!product) {
-    return { title: "Product Not Found | Rushabh Jewellers" };
+    return { title: `Product Not Found | ${siteConfig.name}` };
   }
 
   return {
-    title: `${product.name} | Rushabh Jewellers`,
+    title: `${product.name} | ${siteConfig.name}`,
     description: `Shop ${product.name} — ${product.metal} ${product.category}. BIS hallmarked jewellery with free shipping.`,
   };
 }

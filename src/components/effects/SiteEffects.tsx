@@ -1,6 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { CartDrawer } from "@/components/CartDrawer";
+import { CartProvider } from "@/context/CartContext";
 import { ClientOnly } from "./ClientOnly";
 import { CursorGlow } from "./CursorGlow";
 import { GrainOverlay } from "./GrainOverlay";
@@ -9,13 +11,14 @@ import { ScrollProgress } from "./ScrollProgress";
 
 export function SiteEffects({ children }: { children: ReactNode }) {
   return (
-    <>
+    <CartProvider>
       <ClientOnly>
         <ScrollProgress />
         <CursorGlow />
       </ClientOnly>
       <GrainOverlay />
       <PageTransition>{children}</PageTransition>
-    </>
+      <CartDrawer />
+    </CartProvider>
   );
 }

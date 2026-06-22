@@ -1,10 +1,7 @@
 import { images } from "./images";
+import { storeSettings } from "./store-settings";
 
-export const goldRate = {
-  rate22k: 6850,
-  rate18k: 5620,
-  updatedAt: "Today, 10:30 AM",
-};
+export const goldRate = storeSettings.goldRate;
 
 export const categories = [
   {

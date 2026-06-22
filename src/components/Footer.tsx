@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Globe, MapPin, Share2 } from "lucide-react";
+import { siteConfig } from "@/lib/site-config";
+import { storeSettings } from "@/lib/store-settings";
 
 const footerLinks = {
   shop: [
@@ -39,10 +41,10 @@ export function Footer() {
               </div>
               <div>
                 <p className="font-serif text-xl font-semibold text-white">
-                  Rushabh
+                  {siteConfig.shortName}
                 </p>
                 <p className="text-[10px] uppercase tracking-[0.25em] text-gold-light">
-                  Jewellers
+                  {siteConfig.tagline}
                 </p>
               </div>
             </div>
@@ -92,7 +94,7 @@ export function Footer() {
               <div>
                 <p className="font-medium text-white">Find a Store Near You</p>
                 <p className="text-sm">
-                  15+ stores across Maharashtra. Visit for a premium shopping
+                  {storeSettings.storeLocation}. Visit for a premium shopping
                   experience.
                 </p>
               </div>
@@ -109,7 +111,7 @@ export function Footer() {
         <div className="mt-12 border-t border-white/10 pt-8">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             <p className="text-xs">
-              © 2026 Rushabh Jewellers. All rights
+              © 2026 {siteConfig.name}. All rights
               reserved.
             </p>
             <div className="flex gap-6 text-xs">

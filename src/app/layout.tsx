@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import { SiteEffects } from "@/components/effects/SiteEffects";
+import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -15,15 +16,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Rushabh Jewellers | Gold & Diamond Jewellery Online",
-  description:
-    "Shop exquisite gold and diamond jewellery online. BIS hallmarked, handcrafted designs for weddings, festivals, and everyday elegance.",
+  title: `${siteConfig.name} | Gold & Diamond Jewellery Online`,
+  description: siteConfig.description,
+  metadataBase: new URL(siteConfig.url),
   keywords: [
     "gold jewellery",
     "diamond jewellery",
     "bridal jewellery",
     "online jewellery store",
-    "Rushabh Jewellers",
+    siteConfig.name,
   ],
 };
 

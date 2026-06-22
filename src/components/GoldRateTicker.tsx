@@ -1,11 +1,12 @@
 import { goldRate } from "@/lib/data";
+import { storeSettings } from "@/lib/store-settings";
 
 export function GoldRateTicker() {
   const items = [
     `22K Gold: ₹${goldRate.rate22k.toLocaleString("en-IN")}/g`,
     `18K Gold: ₹${goldRate.rate18k.toLocaleString("en-IN")}/g`,
     "BIS Hallmarked Jewellery",
-    "Free Insured Shipping on orders above ₹25,000",
+    `Free Insured Shipping on orders above ${storeSettings.freeShippingThreshold.toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })}`,
     "Lifetime Exchange Available",
     `Rates updated: ${goldRate.updatedAt}`,
   ];

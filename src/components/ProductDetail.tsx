@@ -16,6 +16,7 @@ import { JewelryImage } from "@/components/JewelryImage";
 import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
 import { RoyalBackground } from "@/components/effects/RoyalBackground";
 import { ScrollReveal } from "@/components/effects/ScrollReveal";
+import { useCart } from "@/context/CartContext";
 import {
   formatPrice,
   getProductById,
@@ -25,6 +26,7 @@ import {
 
 export function ProductDetail({ id }: { id: number }) {
   const product = getProductById(id);
+  const { addToCart } = useCart();
 
   if (!product) {
     return (
@@ -147,9 +149,10 @@ export function ProductDetail({ id }: { id: number }) {
                     className="inline-flex flex-1 items-center justify-center gap-2 rounded-full gold-gradient px-8 py-4 text-sm font-semibold uppercase tracking-wider text-maroon-dark sm:flex-none"
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
+                    onClick={() => addToCart(product.id)}
                   >
                     <ShoppingBag className="h-4 w-4" />
-                    Add to Cart
+                    Enquire
                   </motion.button>
                   <motion.button
                     type="button"

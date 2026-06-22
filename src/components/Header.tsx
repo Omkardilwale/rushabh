@@ -5,6 +5,11 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Heart, Menu, Search, ShoppingBag, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useCart } from "@/context/CartContext";
+import { useMounted } from "@/hooks/useMounted";
+import { formatPrice } from "@/lib/data";
+import { siteConfig } from "@/lib/site-config";
+import { storeSettings } from "@/lib/store-settings";
 import { GoldRateTicker } from "./GoldRateTicker";
 
 const navLinks = [
@@ -25,6 +30,8 @@ const mobileExtras = [
 export function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { itemCount, openCart } = useCart();
+  const mounted = useMounted();
 
   useEffect(() => {
     setMenuOpen(false);
@@ -66,10 +73,10 @@ export function Header() {
               </motion.div>
               <div className="hidden sm:block">
                 <p className="font-serif text-xl font-semibold tracking-wide text-maroon">
-                  Rushabh
+                  {siteConfig.shortName}
                 </p>
                 <p className="text-[10px] uppercase tracking-[0.25em] text-gold-dark">
-                  Jewellers
+                  {siteConfig.tagline}
                 </p>
               </div>
             </Link>
@@ -118,14 +125,17 @@ export function Header() {
             <motion.button
               type="button"
               className="relative rounded-full p-2.5 text-maroon transition-colors hover:bg-cream"
-              aria-label="Cart"
+              aria-label={`Enquiry list${mounted && itemCount > 0 ? `, ${itemCount} items` : ""}`}
+              onClick={openCart}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
               <ShoppingBag className="h-5 w-5" />
-              <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-maroon text-[10px] font-bold text-white">
-                0
-              </span>
+              {mounted && itemCount > 0 && (
+                <span className="absolute right-1 top-1 flex h-4 w-4 min-w-4 items-center justify-center rounded-full bg-maroon px-0.5 text-[10px] font-bold text-white">
+                  {itemCount > 9 ? "9+" : itemCount}
+                </span>
+              )}
             </motion.button>
           </div>
         </div>
@@ -208,7 +218,8 @@ export function Header() {
           </Link>
           <span className="text-gold/40">|</span>
           <span className="text-xs text-foreground/60">
-            Use code <strong className="text-maroon">WELCOME500</strong> for ₹500 off
+            Use code <strong className="text-maroon">{storeSettings.promo.code}</strong> for{" "}
+            {formatPrice(storeSettings.promo.discount)} off
           </span>
         </div>
       </div>
