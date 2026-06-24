@@ -9,6 +9,7 @@ import { useSiteContent } from "@/context/ContentContext";
 import { ParallaxLayer } from "./effects/ParallaxLayer";
 import { OrnamentSticker } from "./effects/OrnamentStickers";
 import { SparkleField } from "./effects/SparkleField";
+import { CountUp } from "./effects/CountUp";
 
 export function Hero() {
   const { content } = useSiteContent();
@@ -192,9 +193,10 @@ export function Hero() {
           >
             {hero.stats.map((stat) => (
               <div key={stat.label}>
-                <p className="font-serif text-3xl font-semibold text-gold-light">
-                  {stat.value}
-                </p>
+                <CountUp
+                  value={stat.value}
+                  className="font-serif text-3xl font-semibold text-gold-light"
+                />
                 <p className="mt-1 text-xs uppercase tracking-wider text-white/50">
                   {stat.label}
                 </p>

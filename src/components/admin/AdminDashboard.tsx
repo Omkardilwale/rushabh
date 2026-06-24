@@ -9,7 +9,6 @@ import {
   emptyConsultationOption,
   emptyHeroSlide,
   emptyHeroStat,
-  emptyNavLink,
   emptyOccasion,
   emptyProduct,
   emptyTestimonial,
@@ -25,20 +24,32 @@ import {
 } from "@/lib/rates/goldapi";
 import {
   AddButton,
+  byteSize,
   Field,
+  ImageField,
   ItemCard,
-  LinkRowEditor,
+  MONGO_DOC_LIMIT_BYTES,
   SectionCard,
+  SelectField,
   TextArea,
 } from "@/components/admin/AdminFields";
 import { useSiteContent } from "@/context/ContentContext";
-import type { SiteContent } from "@/lib/content/types";
+import { computeProductPrice, formatPrice, getProductUnit } from "@/lib/data";
+import type { ProductRateType, SiteContent } from "@/lib/content/types";
+
+const rateTypeOptions: { value: ProductRateType; label: string }[] = [
+  { value: "gold24k", label: "24K Gold (live rate × weight in g)" },
+  { value: "gold22k", label: "22K Gold (live rate × weight in g)" },
+  { value: "gold18k", label: "18K Gold (live rate × weight in g)" },
+  { value: "silver", label: "Silver 999 (live rate × weight in g)" },
+  { value: "diamond", label: "Diamond (rate × weight in carats)" },
+  { value: "none", label: "Manual — use base price below" },
+];
 
 const tabs = [
   { id: "site", label: "Site & Contact" },
   { id: "store", label: "Store & Rates" },
   { id: "hero", label: "Hero" },
-  { id: "nav", label: "Navigation" },
   { id: "catalog", label: "Catalog" },
   { id: "marketing", label: "Marketing" },
   { id: "shop", label: "Shop Page" },
@@ -72,12 +83,23 @@ export function AdminDashboard() {
   );
 
   async function handleSave() {
-    setSaving(true);
     setMessage("");
+
+    const payload = JSON.stringify(draft);
+    const size = byteSize(payload);
+    if (size > MONGO_DOC_LIMIT_BYTES) {
+      setMessage(
+        `Content is ${(size / 1024 / 1024).toFixed(1)}MB, over MongoDB's 16MB document limit. ` +
+          `Remove or shrink some uploaded images, or use image URLs instead.`,
+      );
+      return;
+    }
+
+    setSaving(true);
     const res = await fetch("/api/content", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(draft),
+      body: payload,
     });
     setSaving(false);
     if (!res.ok) {
@@ -295,6 +317,17 @@ export function AdminDashboard() {
                 </p>
               )}
               <Field
+                label="24K gold (₹/g)"
+                type="number"
+                value={draft.store.goldRate.rate24k}
+                onChange={(v) =>
+                  patch("store", {
+                    ...draft.store,
+                    goldRate: { ...draft.store.goldRate, rate24k: Number(v) },
+                  })
+                }
+              />
+              <Field
                 label="22K gold (₹/g)"
                 type="number"
                 value={draft.store.goldRate.rate22k}
@@ -324,6 +357,20 @@ export function AdminDashboard() {
                   patch("store", {
                     ...draft.store,
                     silverRate: { ...draft.store.silverRate, rate999: Number(v) },
+                  })
+                }
+              />
+              <Field
+                label="Diamond (₹/carat)"
+                type="number"
+                value={draft.store.diamondRate.ratePerCarat}
+                onChange={(v) =>
+                  patch("store", {
+                    ...draft.store,
+                    diamondRate: {
+                      ...draft.store.diamondRate,
+                      ratePerCarat: Number(v),
+                    },
                   })
                 }
               />
@@ -367,7 +414,7 @@ export function AdminDashboard() {
                   onClick={() =>
                     patch("hero", {
                       ...draft.hero,
-                      slides: [...draft.hero.slides, emptyHeroSlide()],
+                      slides: [emptyHeroSlide(), ...draft.hero.slides],
                     })
                   }
                 />
@@ -385,7 +432,7 @@ export function AdminDashboard() {
                   }
                   canRemove={draft.hero.slides.length > 1}
                 >
-                  <Field label="Image URL" value={slide.image} onChange={(v) => { const slides = [...draft.hero.slides]; slides[i] = { ...slide, image: v }; patch("hero", { ...draft.hero, slides }); }} />
+                  <ImageField label="Image" value={slide.image} onChange={(v) => { const slides = [...draft.hero.slides]; slides[i] = { ...slide, image: v }; patch("hero", { ...draft.hero, slides }); }} />
                   <Field label="Tagline" value={slide.tagline} onChange={(v) => { const slides = [...draft.hero.slides]; slides[i] = { ...slide, tagline: v }; patch("hero", { ...draft.hero, slides }); }} />
                   <Field label="Title" value={slide.title} onChange={(v) => { const slides = [...draft.hero.slides]; slides[i] = { ...slide, title: v }; patch("hero", { ...draft.hero, slides }); }} />
                   <Field label="Accent" value={slide.accent} onChange={(v) => { const slides = [...draft.hero.slides]; slides[i] = { ...slide, accent: v }; patch("hero", { ...draft.hero, slides }); }} />
@@ -403,7 +450,7 @@ export function AdminDashboard() {
                   onClick={() =>
                     patch("hero", {
                       ...draft.hero,
-                      stats: [...draft.hero.stats, emptyHeroStat()],
+                      stats: [emptyHeroStat(), ...draft.hero.stats],
                     })
                   }
                 />
@@ -435,150 +482,6 @@ export function AdminDashboard() {
           </div>
         )}
 
-        {tab === "nav" && (
-          <div className="grid gap-6 lg:grid-cols-2">
-            <SectionCard
-              title="Primary navigation"
-              action={
-                <AddButton
-                  label="Add link"
-                  onClick={() =>
-                    patch("navigation", {
-                      ...draft.navigation,
-                      primary: [...draft.navigation.primary, emptyNavLink()],
-                    })
-                  }
-                />
-              }
-            >
-              {draft.navigation.primary.map((link, i) => (
-                <LinkRowEditor
-                  key={`primary-${i}`}
-                  link={link}
-                  onChange={(next) => {
-                    const primary = [...draft.navigation.primary];
-                    primary[i] = next;
-                    patch("navigation", { ...draft.navigation, primary });
-                  }}
-                  onRemove={() =>
-                    patch("navigation", {
-                      ...draft.navigation,
-                      primary: removeAt(draft.navigation.primary, i),
-                    })
-                  }
-                />
-              ))}
-            </SectionCard>
-
-            <SectionCard
-              title="Secondary bar links"
-              action={
-                <AddButton
-                  label="Add link"
-                  onClick={() =>
-                    patch("navigation", {
-                      ...draft.navigation,
-                      secondary: [...draft.navigation.secondary, emptyNavLink()],
-                    })
-                  }
-                />
-              }
-            >
-              {draft.navigation.secondary.map((link, i) => (
-                <LinkRowEditor
-                  key={`secondary-${i}`}
-                  link={link}
-                  onChange={(next) => {
-                    const secondary = [...draft.navigation.secondary];
-                    secondary[i] = next;
-                    patch("navigation", { ...draft.navigation, secondary });
-                  }}
-                  onRemove={() =>
-                    patch("navigation", {
-                      ...draft.navigation,
-                      secondary: removeAt(draft.navigation.secondary, i),
-                    })
-                  }
-                />
-              ))}
-            </SectionCard>
-
-            <SectionCard
-              title="Mobile menu extras"
-              action={
-                <AddButton
-                  label="Add link"
-                  onClick={() =>
-                    patch("navigation", {
-                      ...draft.navigation,
-                      mobileExtras: [...draft.navigation.mobileExtras, emptyNavLink()],
-                    })
-                  }
-                />
-              }
-            >
-              {draft.navigation.mobileExtras.map((link, i) => (
-                <LinkRowEditor
-                  key={`mobile-${i}`}
-                  link={link}
-                  onChange={(next) => {
-                    const mobileExtras = [...draft.navigation.mobileExtras];
-                    mobileExtras[i] = next;
-                    patch("navigation", { ...draft.navigation, mobileExtras });
-                  }}
-                  onRemove={() =>
-                    patch("navigation", {
-                      ...draft.navigation,
-                      mobileExtras: removeAt(draft.navigation.mobileExtras, i),
-                    })
-                  }
-                />
-              ))}
-            </SectionCard>
-
-            {(["shop", "help", "company", "legal"] as const).map((group) => (
-              <SectionCard
-                key={group}
-                title={`Footer — ${group}`}
-                action={
-                  <AddButton
-                    label="Add link"
-                    onClick={() =>
-                      patch("footer", {
-                        ...draft.footer,
-                        [group]: [...draft.footer[group], emptyNavLink()],
-                      })
-                    }
-                  />
-                }
-              >
-                {draft.footer[group].map((link, i) => (
-                  <LinkRowEditor
-                    key={`${group}-${i}`}
-                    link={link}
-                    onChange={(next) => {
-                      const links = [...draft.footer[group]];
-                      links[i] = next;
-                      patch("footer", { ...draft.footer, [group]: links });
-                    }}
-                    onRemove={() =>
-                      patch("footer", {
-                        ...draft.footer,
-                        [group]: removeAt(draft.footer[group], i),
-                      })
-                    }
-                  />
-                ))}
-              </SectionCard>
-            ))}
-
-            <SectionCard title="Footer store block">
-              <Field label="Store block heading" value={draft.footer.storeHeading} onChange={(v) => patch("footer", { ...draft.footer, storeHeading: v })} />
-              <Field label="Store CTA" value={draft.footer.storeCta} onChange={(v) => patch("footer", { ...draft.footer, storeCta: v })} />
-            </SectionCard>
-          </div>
-        )}
-
         {tab === "catalog" && (
           <div className="space-y-6">
             <SectionCard
@@ -588,14 +491,21 @@ export function AdminDashboard() {
                   label="Add product"
                   onClick={() =>
                     patch("products", [
-                      ...draft.products,
                       emptyProduct(nextProductId(draft.products)),
+                      ...draft.products,
                     ])
                   }
                 />
               }
             >
-              {draft.products.map((product, i) => (
+              {draft.products.map((product, i) => {
+                const computed = computeProductPrice(product, draft.store);
+                const unit = getProductUnit(product.rateType);
+                const usesLiveRate =
+                  Boolean(product.weight && product.weight > 0) &&
+                  product.rateType !== "none" &&
+                  product.rateType !== undefined;
+                return (
                 <ItemCard
                   key={product.id}
                   title={`#${product.id} ${product.name}`}
@@ -605,16 +515,29 @@ export function AdminDashboard() {
                   <div className="grid gap-3 sm:grid-cols-2">
                     <Field label="Name" value={product.name} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, name: v }; patch("products", products); }} />
                     <Field label="Category" value={product.category} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, category: v }; patch("products", products); }} />
-                    <Field label="Price" type="number" value={product.price} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, price: Number(v) }; patch("products", products); }} />
-                    <Field label="Original price" type="number" value={product.originalPrice ?? ""} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, originalPrice: v ? Number(v) : undefined }; patch("products", products); }} />
                     <Field label="Metal" value={product.metal} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, metal: v }; patch("products", products); }} />
+                    <Field label={`Weight (${unit === "ct" ? "carats" : "grams"})`} type="number" value={product.weight ?? ""} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, weight: v ? Number(v) : undefined }; patch("products", products); }} />
+                    <SelectField label="Price source" value={product.rateType ?? "none"} options={rateTypeOptions} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, rateType: v as ProductRateType }; patch("products", products); }} />
+                    <Field label="Custom charges (₹)" type="number" value={product.makingCharges ?? ""} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, makingCharges: v ? Number(v) : undefined }; patch("products", products); }} />
+                    <Field label={usesLiveRate ? "Base price (fallback)" : "Price (₹)"} type="number" value={product.price} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, price: Number(v) }; patch("products", products); }} />
+                    <Field label="Original price (strike-through)" type="number" value={product.originalPrice ?? ""} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, originalPrice: v ? Number(v) : undefined }; patch("products", products); }} />
                     <Field label="Rating" type="number" value={product.rating} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, rating: Number(v) }; patch("products", products); }} />
-                    <Field label="Image URL" value={product.image} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, image: v }; patch("products", products); }} />
                     <Field label="Badge" value={product.badge ?? ""} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, badge: v || undefined }; patch("products", products); }} />
+                    <ImageField label="Image" value={product.image} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, image: v }; patch("products", products); }} />
+                  </div>
+                  <div className="rounded-lg border border-gold/25 bg-cream/60 px-3 py-2 text-sm">
+                    <span className="font-medium text-maroon">Today&apos;s total on website: </span>
+                    <span className="font-semibold text-maroon">{formatPrice(computed)}</span>
+                    {usesLiveRate && (
+                      <span className="ml-1 text-xs text-foreground/55">
+                        ({product.weight} {unit} × live rate + {formatPrice(product.makingCharges ?? 0)} charges)
+                      </span>
+                    )}
                   </div>
                   <TextArea label="Description (optional)" value={product.description ?? ""} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, description: v || undefined }; patch("products", products); }} />
                 </ItemCard>
-              ))}
+                );
+              })}
             </SectionCard>
 
             <SectionCard
@@ -624,8 +547,8 @@ export function AdminDashboard() {
                   label="Add category"
                   onClick={() =>
                     patch("categories", [
-                      ...draft.categories,
                       emptyCategory(draft.categories.map((c) => c.slug)),
+                      ...draft.categories,
                     ])
                   }
                 />
@@ -642,7 +565,7 @@ export function AdminDashboard() {
                     <Field label="Name" value={cat.name} onChange={(v) => { const categories = [...draft.categories]; categories[i] = { ...cat, name: v }; patch("categories", categories); }} />
                     <Field label="Slug" value={cat.slug} onChange={(v) => { const categories = [...draft.categories]; categories[i] = { ...cat, slug: v }; patch("categories", categories); }} />
                     <Field label="Count" type="number" value={cat.count} onChange={(v) => { const categories = [...draft.categories]; categories[i] = { ...cat, count: Number(v) }; patch("categories", categories); }} />
-                    <Field label="Image URL" value={cat.image} onChange={(v) => { const categories = [...draft.categories]; categories[i] = { ...cat, image: v }; patch("categories", categories); }} />
+                    <ImageField label="Image" value={cat.image} onChange={(v) => { const categories = [...draft.categories]; categories[i] = { ...cat, image: v }; patch("categories", categories); }} />
                   </div>
                 </ItemCard>
               ))}
@@ -654,7 +577,7 @@ export function AdminDashboard() {
                 <AddButton
                   label="Add collection"
                   onClick={() =>
-                    patch("collections", [...draft.collections, emptyCollection()])
+                    patch("collections", [emptyCollection(), ...draft.collections])
                   }
                 />
               }
@@ -669,7 +592,7 @@ export function AdminDashboard() {
                   <Field label="Name" value={col.name} onChange={(v) => { const collections = [...draft.collections]; collections[i] = { ...col, name: v }; patch("collections", collections); }} />
                   <TextArea label="Description" value={col.description} onChange={(v) => { const collections = [...draft.collections]; collections[i] = { ...col, description: v }; patch("collections", collections); }} />
                   <Field label="Tag" value={col.tag} onChange={(v) => { const collections = [...draft.collections]; collections[i] = { ...col, tag: v }; patch("collections", collections); }} />
-                  <Field label="Image URL" value={col.image} onChange={(v) => { const collections = [...draft.collections]; collections[i] = { ...col, image: v }; patch("collections", collections); }} />
+                  <ImageField label="Image" value={col.image} onChange={(v) => { const collections = [...draft.collections]; collections[i] = { ...col, image: v }; patch("collections", collections); }} />
                 </ItemCard>
               ))}
             </SectionCard>
@@ -697,7 +620,7 @@ export function AdminDashboard() {
                 <AddButton
                   label="Add testimonial"
                   onClick={() =>
-                    patch("testimonials", [...draft.testimonials, emptyTestimonial()])
+                    patch("testimonials", [emptyTestimonial(), ...draft.testimonials])
                   }
                 />
               }
@@ -722,7 +645,7 @@ export function AdminDashboard() {
                 <AddButton
                   label="Add badge"
                   onClick={() =>
-                    patch("trustFeatures", [...draft.trustFeatures, emptyTrustFeature()])
+                    patch("trustFeatures", [emptyTrustFeature(), ...draft.trustFeatures])
                   }
                 />
               }
@@ -761,7 +684,7 @@ export function AdminDashboard() {
               action={
                 <AddButton
                   label="Add occasion"
-                  onClick={() => patch("occasions", [...draft.occasions, emptyOccasion()])}
+                  onClick={() => patch("occasions", [emptyOccasion(), ...draft.occasions])}
                 />
               }
             >
@@ -786,7 +709,7 @@ export function AdminDashboard() {
                   label="Add card"
                   onClick={() =>
                     patch("consultation", {
-                      options: [...draft.consultation.options, emptyConsultationOption()],
+                      options: [emptyConsultationOption(), ...draft.consultation.options],
                     })
                   }
                 />
@@ -831,7 +754,7 @@ export function AdminDashboard() {
 
         {tab === "shop" && (
           <SectionCard title="Shop page">
-            <Field label="Banner image URL" value={draft.shop.bannerImage} onChange={(v) => patch("shop", { ...draft.shop, bannerImage: v })} />
+            <ImageField label="Banner image" value={draft.shop.bannerImage} onChange={(v) => patch("shop", { ...draft.shop, bannerImage: v })} />
             <TextArea label="Metal filters (comma separated)" value={draft.shop.metalFilters.join(", ")} onChange={(v) => patch("shop", { ...draft.shop, metalFilters: v.split(",").map((s) => s.trim()).filter(Boolean) })} />
             <Field label="Empty state title" value={draft.shop.emptyTitle} onChange={(v) => patch("shop", { ...draft.shop, emptyTitle: v })} />
             <Field label="Empty state message" value={draft.shop.emptyMessage} onChange={(v) => patch("shop", { ...draft.shop, emptyMessage: v })} />

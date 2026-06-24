@@ -19,8 +19,11 @@ import { ScrollReveal } from "@/components/effects/ScrollReveal";
 import { useCart } from "@/context/CartContext";
 import { useSiteContent } from "@/context/ContentContext";
 import {
+  computeProductPrice,
   formatPrice,
+  formatWeight,
   getProductById,
+  getProductUnit,
   getRelatedProducts,
 } from "@/lib/data";
 
@@ -53,6 +56,8 @@ export function ProductDetail({ id }: { id: number }) {
   }
 
   const related = getRelatedProducts(id);
+  const price = computeProductPrice(product, content.store);
+  const weightLabel = formatWeight(product.weight, getProductUnit(product.rateType));
 
   return (
     <>
@@ -98,6 +103,7 @@ export function ProductDetail({ id }: { id: number }) {
               <div>
                 <p className="text-sm font-medium uppercase tracking-[0.25em] text-gold-dark">
                   {product.category} · {product.metal}
+                  {weightLabel && <span> · {weightLabel}</span>}
                 </p>
                 <h1 className="mt-3 font-serif text-4xl font-light text-maroon md:text-5xl">
                   {product.name}
@@ -123,18 +129,18 @@ export function ProductDetail({ id }: { id: number }) {
 
                 <div className="mt-6 flex items-baseline gap-3">
                   <span className="font-serif text-3xl font-semibold text-maroon">
-                    {formatPrice(product.price)}
+                    {formatPrice(price)}
                   </span>
-                  {product.originalPrice && (
+                  {product.originalPrice && product.originalPrice > price && (
                     <span className="text-lg text-foreground/40 line-through">
                       {formatPrice(product.originalPrice)}
                     </span>
                   )}
                 </div>
 
-                {product.originalPrice && (
+                {product.originalPrice && product.originalPrice > price && (
                   <p className="mt-2 text-sm font-medium text-green-700">
-                    Save {formatPrice(product.originalPrice - product.price)}
+                    Save {formatPrice(product.originalPrice - price)}
                   </p>
                 )}
 
@@ -152,7 +158,7 @@ export function ProductDetail({ id }: { id: number }) {
                     onClick={() => addToCart(product.id)}
                   >
                     <ShoppingBag className="h-4 w-4" />
-                    Enquire
+                    Add to Cart
                   </motion.button>
                   <motion.button
                     type="button"
@@ -214,7 +220,7 @@ export function ProductDetail({ id }: { id: number }) {
                         {item.name}
                       </h3>
                       <p className="mt-1 font-semibold text-maroon">
-                        {formatPrice(item.price)}
+                        {formatPrice(computeProductPrice(item, content.store))}
                       </p>
                     </div>
                   </JharokhaFrame>

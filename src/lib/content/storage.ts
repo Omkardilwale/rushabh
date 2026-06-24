@@ -1,18 +1,12 @@
 import "server-only";
 import { readFile, writeFile, mkdir } from "fs/promises";
 import path from "path";
-import { getMongoDb, isMongoConfigured } from "@/lib/mongodb";
+import { connectMongoose, isMongoConfigured } from "@/lib/mongodb";
 import { defaultSiteContent } from "./defaults";
+import { SITE_CONTENT_KEY, SiteContentModel } from "./model";
 import type { SiteContent } from "./types";
 
 const CONTENT_PATH = path.join(process.cwd(), "data", "site-content.json");
-const COLLECTION = "site_content";
-const DOC_ID = "main" as const;
-
-type SiteContentDoc = SiteContent & {
-  _id: typeof DOC_ID;
-  updatedAt: string;
-};
 
 function deepMerge<T extends Record<string, unknown>>(
   base: T,
@@ -47,35 +41,21 @@ export function mergeWithDefaults(content: Partial<SiteContent>): SiteContent {
   ) as unknown as SiteContent;
 }
 
-function stripMongoMeta(doc: Record<string, unknown>): Partial<SiteContent> {
-  const { _id, updatedAt, ...content } = doc;
-  void _id;
-  void updatedAt;
-  return content as Partial<SiteContent>;
-}
-
 async function readFromMongo(): Promise<SiteContent | null> {
   if (!isMongoConfigured()) return null;
 
-  const db = await getMongoDb();
-  const doc = await db
-    .collection<SiteContentDoc>(COLLECTION)
-    .findOne({ _id: DOC_ID });
-  if (!doc) return null;
+  await connectMongoose();
+  const doc = await SiteContentModel.findOne({ key: SITE_CONTENT_KEY }).lean();
+  if (!doc?.content) return null;
 
-  return mergeWithDefaults(stripMongoMeta(doc as Record<string, unknown>));
+  return mergeWithDefaults(doc.content as Partial<SiteContent>);
 }
 
 async function writeToMongo(content: SiteContent): Promise<void> {
-  const db = await getMongoDb();
-  await db.collection<SiteContentDoc>(COLLECTION).updateOne(
-    { _id: DOC_ID },
-    {
-      $set: {
-        ...content,
-        updatedAt: new Date().toISOString(),
-      },
-    },
+  await connectMongoose();
+  await SiteContentModel.updateOne(
+    { key: SITE_CONTENT_KEY },
+    { $set: { content, updatedAt: new Date() } },
     { upsert: true },
   );
 }

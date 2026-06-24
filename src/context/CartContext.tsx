@@ -9,7 +9,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { getProductById } from "@/lib/data";
+import { computeProductPrice, getProductById } from "@/lib/data";
+import { getStoreSettings } from "@/lib/store-settings";
 
 const STORAGE_KEY = "rushabh-cart";
 
@@ -67,7 +68,7 @@ function toCartLines(items: CartItem[]): CartLine[] {
       return {
         ...item,
         name: product.name,
-        price: product.price,
+        price: computeProductPrice(product, getStoreSettings()),
         metal: product.metal,
         image: product.image,
         category: product.category,

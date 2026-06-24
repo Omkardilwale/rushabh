@@ -21,12 +21,17 @@ export const defaultSiteContent: SiteContent = {
   },
   store: {
     goldRate: {
+      rate24k: 7470,
       rate22k: 6850,
       rate18k: 5620,
       updatedAt: "Today, 10:30 AM",
     },
     silverRate: {
       rate999: 92,
+      updatedAt: "Today, 10:30 AM",
+    },
+    diamondRate: {
+      ratePerCarat: 55000,
       updatedAt: "Today, 10:30 AM",
     },
     ratesMode: "manual",
@@ -263,6 +268,9 @@ export const defaultSiteContent: SiteContent = {
       image: images.products.ringFloral,
       badge: "Bestseller",
       rating: 4.9,
+      weight: 4,
+      rateType: "gold18k",
+      makingCharges: 8000,
     },
     {
       id: 2,
@@ -273,6 +281,9 @@ export const defaultSiteContent: SiteContent = {
       image: images.products.earringsPearl,
       badge: "New",
       rating: 4.8,
+      weight: 2,
+      rateType: "gold22k",
+      makingCharges: 5000,
     },
     {
       id: 3,
@@ -282,6 +293,9 @@ export const defaultSiteContent: SiteContent = {
       metal: "22K Gold",
       image: images.products.necklaceRoyal,
       rating: 5.0,
+      weight: 9,
+      rateType: "gold22k",
+      makingCharges: 20000,
     },
     {
       id: 4,
@@ -292,6 +306,9 @@ export const defaultSiteContent: SiteContent = {
       image: images.products.banglesClassic,
       badge: "Trending",
       rating: 4.7,
+      weight: 5,
+      rateType: "gold22k",
+      makingCharges: 9000,
     },
     {
       id: 5,
@@ -302,6 +319,9 @@ export const defaultSiteContent: SiteContent = {
       metal: "18K Gold",
       image: images.products.pendantEmerald,
       rating: 4.6,
+      weight: 3,
+      rateType: "gold18k",
+      makingCharges: 5500,
     },
     {
       id: 6,
@@ -312,6 +332,9 @@ export const defaultSiteContent: SiteContent = {
       image: images.products.ringSolitaire,
       badge: "Premium",
       rating: 4.9,
+      weight: 3.5,
+      rateType: "none",
+      makingCharges: 0,
     },
     {
       id: 7,
@@ -321,6 +344,9 @@ export const defaultSiteContent: SiteContent = {
       metal: "22K Gold",
       image: images.products.earringsTemple,
       rating: 4.8,
+      weight: 4,
+      rateType: "gold22k",
+      makingCharges: 5500,
     },
     {
       id: 8,
@@ -331,6 +357,9 @@ export const defaultSiteContent: SiteContent = {
       image: images.products.mangalsutraAntique,
       badge: "Heritage",
       rating: 4.9,
+      weight: 3,
+      rateType: "gold22k",
+      makingCharges: 6500,
     },
   ],
   occasions: [

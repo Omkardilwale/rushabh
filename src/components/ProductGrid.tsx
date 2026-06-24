@@ -4,20 +4,37 @@ import Link from "next/link";
 import { useRef } from "react";
 import { JewelryImage } from "@/components/JewelryImage";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ChevronLeft, ChevronRight, Heart, Star } from "lucide-react";
-import { formatPrice } from "@/lib/data";
-import type { Product } from "@/lib/content/types";
+import { ChevronLeft, ChevronRight, Heart, ShoppingBag, Star } from "lucide-react";
+import {
+  computeProductPrice,
+  formatPrice,
+  formatWeight,
+  getProductUnit,
+} from "@/lib/data";
+import type { Product, SiteContent } from "@/lib/content/types";
 import { useSiteContent } from "@/context/ContentContext";
+import { useCart } from "@/context/CartContext";
 import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
 import { RoyalBackground } from "./effects/RoyalBackground";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "./effects/ScrollReveal";
 
 function ProductCard({
   product,
+  store,
 }: {
   product: Product;
+  store: SiteContent["store"];
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const { addToCart } = useCart();
+  const price = computeProductPrice(product, store);
+  const weightLabel = formatWeight(product.weight, getProductUnit(product.rateType));
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCart(product.id);
+  };
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [8, -8]), { stiffness: 300, damping: 30 });
@@ -87,20 +104,33 @@ function ProductCard({
         <h3 className="mt-1 font-serif text-base font-medium text-foreground line-clamp-2">
           {product.name}
         </h3>
-        <div className="mt-1 flex items-center gap-1">
-          <Star className="h-3 w-3 fill-gold text-gold" />
-          <span className="text-xs text-foreground/60">{product.rating}</span>
+        <div className="mt-1 flex items-center gap-2">
+          <div className="flex items-center gap-1">
+            <Star className="h-3 w-3 fill-gold text-gold" />
+            <span className="text-xs text-foreground/60">{product.rating}</span>
+          </div>
+          {weightLabel && (
+            <span className="text-xs text-foreground/50">· {weightLabel}</span>
+          )}
         </div>
         <div className="mt-2 flex items-baseline gap-2">
           <span className="font-semibold text-maroon">
-            {formatPrice(product.price)}
+            {formatPrice(price)}
           </span>
-          {product.originalPrice && (
+          {product.originalPrice && product.originalPrice > price && (
             <span className="text-xs text-foreground/40 line-through">
               {formatPrice(product.originalPrice)}
             </span>
           )}
         </div>
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-maroon px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white transition-colors hover:bg-maroon-dark"
+        >
+          <ShoppingBag className="h-3.5 w-3.5" />
+          Add to Cart
+        </button>
       </div>
     </motion.article>
     </JharokhaFrame>
@@ -171,7 +201,7 @@ export function ProductGrid() {
               key={product.id}
               className="w-[72vw] shrink-0 snap-center sm:w-[45vw] md:w-auto"
             >
-              <ProductCard product={product} />
+              <ProductCard product={product} store={content.store} />
             </StaggerItem>
           ))}
         </StaggerContainer>

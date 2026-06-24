@@ -39,6 +39,7 @@ export async function syncMetalRates(options?: {
       ...content.store,
       ratesLastSyncedAt: syncedAt,
       goldRate: {
+        rate24k: live.rate24k,
         rate22k: live.rate22k,
         rate18k: live.rate18k,
         updatedAt: live.updatedAt,

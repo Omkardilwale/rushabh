@@ -34,6 +34,9 @@ export function emptyProduct(id: number): Product {
     metal: "22K Gold",
     image: images.products.ringFloral,
     rating: 4.5,
+    weight: 5,
+    rateType: "gold22k",
+    makingCharges: 2000,
   };
 }
 

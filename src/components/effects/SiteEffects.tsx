@@ -7,6 +7,7 @@ import { ContentProvider } from "@/context/ContentContext";
 import type { SiteContent } from "@/lib/content/types";
 import { ClientOnly } from "./ClientOnly";
 import { CursorGlow } from "./CursorGlow";
+import { FloatingActions } from "./FloatingActions";
 import { GrainOverlay } from "./GrainOverlay";
 import { PageTransition } from "./PageTransition";
 import { ScrollProgress } from "./ScrollProgress";
@@ -27,6 +28,9 @@ export function SiteEffects({
         </ClientOnly>
         <GrainOverlay />
         <PageTransition>{children}</PageTransition>
+        <ClientOnly>
+          <FloatingActions />
+        </ClientOnly>
         <CartDrawer />
       </CartProvider>
     </ContentProvider>

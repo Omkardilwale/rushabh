@@ -3,9 +3,63 @@ import {
   setRuntimeContent,
   type SiteContent,
 } from "@/lib/content/client";
-import type { Product } from "@/lib/content/types";
+import type { Product, ProductRateType } from "@/lib/content/types";
 
 export type { Product };
+
+type StoreSettings = SiteContent["store"];
+
+export function getMetalRatePerGram(
+  rateType: ProductRateType | undefined,
+  store: StoreSettings,
+): number | null {
+  switch (rateType) {
+    case "gold24k":
+      return store.goldRate.rate24k;
+    case "gold22k":
+      return store.goldRate.rate22k;
+    case "gold18k":
+      return store.goldRate.rate18k;
+    case "silver":
+      return store.silverRate.rate999;
+    case "diamond":
+      return store.diamondRate.ratePerCarat;
+    default:
+      return null;
+  }
+}
+
+/** Unit a product's weight is measured in: carats for diamond, grams otherwise. */
+export function getProductUnit(rateType: ProductRateType | undefined): "g" | "ct" {
+  return rateType === "diamond" ? "ct" : "g";
+}
+
+/**
+ * Today's total price for a product: when a weight + live rate type are set,
+ * total = weight × today's metal rate + custom charges. Otherwise falls back
+ * to the manually entered price.
+ */
+export function computeProductPrice(
+  product: Product,
+  store: StoreSettings,
+): number {
+  const rate =
+    product.weight && product.weight > 0
+      ? getMetalRatePerGram(product.rateType, store)
+      : null;
+
+  if (rate && product.weight) {
+    return Math.round(rate * product.weight + (product.makingCharges ?? 0));
+  }
+
+  return product.price;
+}
+
+export function formatWeight(weight?: number, unit: "g" | "ct" = "g"): string | null {
+  if (!weight || weight <= 0) return null;
+  const rounded = Math.round(weight * 100) / 100;
+  return `${rounded} ${unit}`;
+}
 
 export function setSiteContent(content: SiteContent) {
   setRuntimeContent(content);

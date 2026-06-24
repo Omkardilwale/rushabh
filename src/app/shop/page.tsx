@@ -5,7 +5,7 @@ import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { JewelryImage } from "@/components/JewelryImage";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
-import { Heart, SlidersHorizontal, Star, X } from "lucide-react";
+import { Heart, ShoppingBag, SlidersHorizontal, Star, X } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
@@ -13,12 +13,18 @@ import { RoyalBackground } from "@/components/effects/RoyalBackground";
 import { OrnamentSticker } from "@/components/effects/OrnamentStickers";
 import { ParallaxLayer } from "@/components/effects/ParallaxLayer";
 import { useSiteContent } from "@/context/ContentContext";
-import { formatPrice } from "@/lib/data";
+import {
+  computeProductPrice,
+  formatPrice,
+  formatWeight,
+  getProductUnit,
+} from "@/lib/data";
 import {
   getShopFilterLabel,
   matchesShopUrlFilters,
   parseShopSearchParams,
 } from "@/lib/shop-filters";
+import { useCart } from "@/context/CartContext";
 
 export default function ShopPage() {
   return (
@@ -40,6 +46,7 @@ function ShopPageFallback() {
 
 function ShopPageContent() {
   const { content } = useSiteContent();
+  const { addToCart } = useCart();
   const { categories, products, shop } = content;
   const metalFilters = shop.metalFilters;
   const priceFilters = shop.priceFilters.map((f) => ({
@@ -79,18 +86,18 @@ function ShopPageContent() {
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
+      const price = computeProductPrice(product, content.store);
       const categoryMatch =
         selectedCategory === "all" ||
         product.category.toLowerCase() === selectedCategory;
       const metalMatch =
         selectedMetal === "All" || product.metal === selectedMetal;
       const priceMatch =
-        product.price >= selectedPrice.min &&
-        product.price <= selectedPrice.max;
+        price >= selectedPrice.min && price <= selectedPrice.max;
       const urlMatch = matchesShopUrlFilters(product, urlFilters);
       return categoryMatch && metalMatch && priceMatch && urlMatch;
     });
-  }, [selectedCategory, selectedMetal, selectedPrice, urlFilters]);
+  }, [products, content.store, selectedCategory, selectedMetal, selectedPrice, urlFilters]);
 
   const gridKey = [
     selectedCategory,
@@ -340,22 +347,48 @@ function ShopPageContent() {
                           <h3 className="mt-1 font-serif text-base font-medium line-clamp-2">
                             {product.name}
                           </h3>
-                          <div className="mt-1 flex items-center gap-1">
-                            <Star className="h-3 w-3 fill-gold text-gold" />
-                            <span className="text-xs text-foreground/60">
-                              {product.rating}
-                            </span>
-                          </div>
-                          <div className="mt-2 flex items-baseline gap-2">
-                            <span className="font-semibold text-maroon">
-                              {formatPrice(product.price)}
-                            </span>
-                            {product.originalPrice && (
-                              <span className="text-xs text-foreground/40 line-through">
-                                {formatPrice(product.originalPrice)}
+                          <div className="mt-1 flex items-center gap-2">
+                            <div className="flex items-center gap-1">
+                              <Star className="h-3 w-3 fill-gold text-gold" />
+                              <span className="text-xs text-foreground/60">
+                                {product.rating}
+                              </span>
+                            </div>
+                            {formatWeight(product.weight, getProductUnit(product.rateType)) && (
+                              <span className="text-xs text-foreground/50">
+                                · {formatWeight(product.weight, getProductUnit(product.rateType))}
                               </span>
                             )}
                           </div>
+                          {(() => {
+                            const price = computeProductPrice(product, content.store);
+                            return (
+                              <>
+                                <div className="mt-2 flex items-baseline gap-2">
+                                  <span className="font-semibold text-maroon">
+                                    {formatPrice(price)}
+                                  </span>
+                                  {product.originalPrice && product.originalPrice > price && (
+                                    <span className="text-xs text-foreground/40 line-through">
+                                      {formatPrice(product.originalPrice)}
+                                    </span>
+                                  )}
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    addToCart(product.id);
+                                  }}
+                                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-maroon px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white transition-colors hover:bg-maroon-dark"
+                                >
+                                  <ShoppingBag className="h-3.5 w-3.5" />
+                                  Add to Cart
+                                </button>
+                              </>
+                            );
+                          })()}
                         </div>
                       </motion.article>
                       </JharokhaFrame>

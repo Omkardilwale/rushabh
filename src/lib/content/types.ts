@@ -1,5 +1,13 @@
 export type NavLink = { label: string; href: string };
 
+export type ProductRateType =
+  | "gold24k"
+  | "gold22k"
+  | "gold18k"
+  | "silver"
+  | "diamond"
+  | "none";
+
 export type Product = {
   id: number;
   name: string;
@@ -11,6 +19,12 @@ export type Product = {
   badge?: string;
   rating: number;
   description?: string;
+  /** Net weight in grams (shown on cards, used for live price calc). */
+  weight?: number;
+  /** Which live metal rate to apply to the weight. "none" = use manual price. */
+  rateType?: ProductRateType;
+  /** Extra/custom charges (making, stones, GST, etc.) added to the metal value. */
+  makingCharges?: number;
 };
 
 export type Category = {
@@ -91,8 +105,14 @@ export type SiteContent = {
     contactPhone: string;
   };
   store: {
-    goldRate: { rate22k: number; rate18k: number; updatedAt: string };
+    goldRate: {
+      rate24k: number;
+      rate22k: number;
+      rate18k: number;
+      updatedAt: string;
+    };
     silverRate: { rate999: number; updatedAt: string };
+    diamondRate: { ratePerCarat: number; updatedAt: string };
     ratesMode: "manual" | "auto";
     ratesLastSyncedAt: string;
     diamondRateLabel: string;
