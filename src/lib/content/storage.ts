@@ -44,11 +44,16 @@ export function mergeWithDefaults(content: Partial<SiteContent>): SiteContent {
 async function readFromMongo(): Promise<SiteContent | null> {
   if (!isMongoConfigured()) return null;
 
-  await connectMongoose();
-  const doc = await SiteContentModel.findOne({ key: SITE_CONTENT_KEY }).lean();
-  if (!doc?.content) return null;
+  try {
+    await connectMongoose();
+    const doc = await SiteContentModel.findOne({ key: SITE_CONTENT_KEY }).lean();
+    if (!doc?.content) return null;
 
-  return mergeWithDefaults(doc.content as Partial<SiteContent>);
+    return mergeWithDefaults(doc.content as Partial<SiteContent>);
+  } catch (error) {
+    console.error("[content] MongoDB read failed, using fallback:", error);
+    return null;
+  }
 }
 
 async function writeToMongo(content: SiteContent): Promise<void> {
@@ -79,7 +84,11 @@ async function seedMongoFromFallback(): Promise<SiteContent> {
   const content = fromFile ?? defaultSiteContent;
 
   if (isMongoConfigured()) {
-    await writeToMongo(content);
+    try {
+      await writeToMongo(content);
+    } catch (error) {
+      console.error("[content] MongoDB seed failed, serving fallback:", error);
+    }
   }
 
   return content;

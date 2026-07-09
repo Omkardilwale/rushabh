@@ -19,11 +19,16 @@ export async function connectMongoose(): Promise<typeof mongoose> {
 
   if (!global._mongooseConn) {
     mongoose.set("strictQuery", true);
-    global._mongooseConn = mongoose.connect(uri, {
-      dbName,
-      bufferCommands: false,
-      serverSelectionTimeoutMS: 10000,
-    });
+    global._mongooseConn = mongoose
+      .connect(uri, {
+        dbName,
+        bufferCommands: false,
+        serverSelectionTimeoutMS: 10000,
+      })
+      .catch((error) => {
+        global._mongooseConn = undefined;
+        throw error;
+      });
   }
 
   return global._mongooseConn;
