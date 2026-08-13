@@ -6,7 +6,7 @@ export const defaultSiteContent: SiteContent = {
     name: "Rushabh Jewellers",
     shortName: "Rushabh",
     tagline: "Jewellers",
-    url: "https://rushabh-website.vercel.app",
+    url: "https://vrushabhjewellers.in",
     description:
       "Shop exquisite gold and diamond jewellery online. BIS hallmarked, handcrafted designs for weddings, festivals, and everyday elegance.",
     copyrightYear: 2026,
