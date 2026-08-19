@@ -32,6 +32,7 @@ import {
   SectionCard,
   SelectField,
   TextArea,
+  VERCEL_PAYLOAD_LIMIT_BYTES,
 } from "@/components/admin/AdminFields";
 import { useSiteContent } from "@/context/ContentContext";
 import { computeProductPrice, formatPrice, getProductUnit } from "@/lib/data";
@@ -94,6 +95,13 @@ export function AdminDashboard() {
       );
       return;
     }
+    if (size > VERCEL_PAYLOAD_LIMIT_BYTES) {
+      setMessage(
+        `Content is ${(size / 1024 / 1024).toFixed(1)}MB — too large to save (${(VERCEL_PAYLOAD_LIMIT_BYTES / 1024 / 1024).toFixed(0)}MB server limit). ` +
+          `Replace some uploaded images with URLs, or remove unused images, then save again.`,
+      );
+      return;
+    }
 
     setSaving(true);
     const res = await fetch("/api/content", {
@@ -103,7 +111,13 @@ export function AdminDashboard() {
     });
     setSaving(false);
     if (!res.ok) {
-      const data = (await res.json()) as { error?: string };
+      if (res.status === 413) {
+        setMessage(
+          "Save failed: request too large for the server. Use fewer/smaller uploaded images or paste image URLs instead.",
+        );
+        return;
+      }
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
       setMessage(data.error ?? "Save failed");
       return;
     }

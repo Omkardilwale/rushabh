@@ -10,13 +10,15 @@ interface TrailPoint {
   id: number;
 }
 
-const TRAIL_COUNT = 6;
+const TRAIL_COUNT = 4;
+const TRAIL_INTERVAL_MS = 48;
 
 export function CursorGlow() {
   const [isVisible, setIsVisible] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const [trail, setTrail] = useState<TrailPoint[]>([]);
   const idRef = useRef(0);
+  const lastTrailAtRef = useRef(0);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -43,6 +45,10 @@ export function CursorGlow() {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
       setIsVisible(true);
+
+      const now = performance.now();
+      if (now - lastTrailAtRef.current < TRAIL_INTERVAL_MS) return;
+      lastTrailAtRef.current = now;
 
       setTrail((prev) => {
         const next = [

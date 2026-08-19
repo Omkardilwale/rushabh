@@ -1,11 +1,19 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { useRef, useState } from "react";
+import {
+  compressImageToDataUrl,
+  TARGET_IMAGE_BYTES,
+  VERCEL_PAYLOAD_LIMIT_BYTES,
+} from "@/lib/image-compress";
 
 /** MongoDB BSON document hard limit (16MB). All site content lives in one document. */
 export const MONGO_DOC_LIMIT_BYTES = 16 * 1024 * 1024;
-/** Max size for a single uploaded image (base64 inflates ~33%, many images share one doc). */
-export const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
+/** Max raw file size before client-side compression. */
+export const MAX_UPLOAD_FILE_BYTES = 12 * 1024 * 1024;
+
+export { TARGET_IMAGE_BYTES, VERCEL_PAYLOAD_LIMIT_BYTES };
 
 export function byteSize(str: string): number {
   if (typeof Blob !== "undefined") return new Blob([str]).size;
@@ -28,42 +36,48 @@ export function ImageField({
   const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [status, setStatus] = useState("");
 
   const isUploaded = value.startsWith("data:");
 
   async function handleFile(file: File) {
     setError("");
+    setStatus("");
 
     if (!file.type.startsWith("image/")) {
       setError("Please choose an image file.");
       return;
     }
 
-    if (file.size > MAX_IMAGE_BYTES) {
+    if (file.size > MAX_UPLOAD_FILE_BYTES) {
       setError(
-        `Image is ${formatMb(file.size)} — max ${formatMb(MAX_IMAGE_BYTES)}. ` +
-          `Images are stored as base64 inside one MongoDB document (16MB limit), so keep them small or use a URL.`,
+        `Image is ${formatMb(file.size)} — max ${formatMb(MAX_UPLOAD_FILE_BYTES)} before compression.`,
       );
       return;
     }
 
     setBusy(true);
-    try {
-      const dataUrl = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = () => reject(reader.error);
-        reader.readAsDataURL(file);
-      });
+    setStatus("Compressing image…");
 
-      if (byteSize(dataUrl) > MONGO_DOC_LIMIT_BYTES) {
+    try {
+      const dataUrl = await compressImageToDataUrl(file, TARGET_IMAGE_BYTES);
+      const encodedSize = byteSize(dataUrl);
+
+      if (encodedSize > MONGO_DOC_LIMIT_BYTES) {
         setError("Encoded image is too large to store. Choose a smaller image.");
         return;
       }
 
       onChange(dataUrl);
-    } catch {
-      setError("Could not read that file. Try again or paste a URL.");
+      setStatus(
+        `Ready — compressed to ${formatMb(encodedSize)} (saved as JPEG).`,
+      );
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Could not process that file. Try again or paste a URL.",
+      );
     } finally {
       setBusy(false);
     }
@@ -82,6 +96,14 @@ export function ImageField({
               No image
             </span>
           )}
+          {busy && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-maroon-dark/55 text-white">
+              <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
+              <span className="px-1 text-center text-[9px] font-medium uppercase tracking-wide">
+                Uploading
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="flex-1 space-y-2">
@@ -99,8 +121,9 @@ export function ImageField({
               type="button"
               onClick={() => inputRef.current?.click()}
               disabled={busy}
-              className="rounded-full border border-maroon/25 bg-cream px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-maroon transition-colors hover:bg-white disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-full border border-maroon/25 bg-cream px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-maroon transition-colors hover:bg-white disabled:opacity-60"
             >
+              {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />}
               {busy ? "Uploading…" : isUploaded ? "Replace image" : "Upload image"}
             </button>
             {value && (
@@ -129,8 +152,12 @@ export function ImageField({
           </div>
 
           <p className="text-[11px] text-foreground/50">
-            Upload an image (stored as base64, max {formatMb(MAX_IMAGE_BYTES)}) or paste a URL.
+            Upload compresses to ~{formatMb(TARGET_IMAGE_BYTES)} JPEG automatically, or paste a URL.
+            Keep total uploaded images low so Save stays under 4MB.
           </p>
+          {status && !error && (
+            <p className="text-[11px] text-emerald-700">{status}</p>
+          )}
           {error && <p className="text-[11px] text-red-600">{error}</p>}
         </div>
       </div>

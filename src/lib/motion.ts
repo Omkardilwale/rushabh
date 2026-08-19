@@ -7,6 +7,6 @@ export const motionFast = {
 };
 
 export const cursorSpring = {
-  dot: { stiffness: 900, damping: 45, mass: 0.15 },
-  glow: { stiffness: 400, damping: 35, mass: 0.2 },
+  dot: { stiffness: 280, damping: 28, mass: 0.5 },
+  glow: { stiffness: 180, damping: 26, mass: 0.6 },
 };
