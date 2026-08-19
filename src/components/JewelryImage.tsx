@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { images, isRemoteImage } from "@/lib/images";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +15,11 @@ interface JewelryImageProps {
   fallback?: string;
 }
 
+function resolveImageSrc(src: string, fallback: string): string {
+  const trimmed = src.trim();
+  return trimmed || fallback;
+}
+
 export function JewelryImage({
   src,
   alt,
@@ -25,13 +30,21 @@ export function JewelryImage({
   height,
   fallback = images.fallback,
 }: JewelryImageProps) {
-  const [currentSrc, setCurrentSrc] = useState(src);
+  const [currentSrc, setCurrentSrc] = useState(() =>
+    resolveImageSrc(src, fallback),
+  );
+
+  useEffect(() => {
+    setCurrentSrc(resolveImageSrc(src, fallback));
+  }, [src, fallback]);
 
   const handleError = () => {
     if (currentSrc !== fallback) {
       setCurrentSrc(fallback);
     }
   };
+
+  const safeSrc = resolveImageSrc(currentSrc, fallback);
 
   const imgClass = cn(
     fill ? "absolute inset-0 h-full w-full object-cover" : "",
@@ -41,14 +54,14 @@ export function JewelryImage({
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={currentSrc}
+      src={safeSrc}
       alt={alt}
       width={width}
       height={height}
       className={imgClass}
       loading={priority ? "eager" : "lazy"}
       decoding="async"
-      referrerPolicy={isRemoteImage(currentSrc) ? "no-referrer" : undefined}
+      referrerPolicy={isRemoteImage(safeSrc) ? "no-referrer" : undefined}
       onError={handleError}
     />
   );
