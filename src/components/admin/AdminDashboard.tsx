@@ -62,6 +62,46 @@ function removeAt<T>(items: T[], index: number): T[] {
   return items.filter((_, i) => i !== index);
 }
 
+function jsonEqual(a: unknown, b: unknown): boolean {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
+function buildSavePayload(draft: SiteContent, liveContent: SiteContent): string {
+  const patch: Partial<SiteContent> = {};
+
+  for (const key of Object.keys(draft) as (keyof SiteContent)[]) {
+    if (key !== "products" && !jsonEqual(draft[key], liveContent[key])) {
+      patch[key] = draft[key] as never;
+    }
+  }
+
+  const liveProductsById = new Map(liveContent.products.map((product) => [product.id, product]));
+  const draftProductIds = new Set(draft.products.map((product) => product.id));
+  const upsert = draft.products.filter((product) => {
+    const liveProduct = liveProductsById.get(product.id);
+    return !liveProduct || !jsonEqual(product, liveProduct);
+  });
+  const deleteIds = liveContent.products
+    .filter((product) => !draftProductIds.has(product.id))
+    .map((product) => product.id);
+  const productOrderChanged = !jsonEqual(
+    draft.products.map((product) => product.id),
+    liveContent.products.map((product) => product.id),
+  );
+
+  return JSON.stringify({
+    patch,
+    products:
+      upsert.length || deleteIds.length || productOrderChanged
+        ? {
+            upsert,
+            deleteIds,
+            order: draft.products.map((product) => product.id),
+          }
+        : undefined,
+  });
+}
+
 export function AdminDashboard() {
   const router = useRouter();
   const { content: liveContent, updateContent, refresh } = useSiteContent();
@@ -86,18 +126,19 @@ export function AdminDashboard() {
   async function handleSave() {
     setMessage("");
 
-    const payload = JSON.stringify(draft);
-    const size = byteSize(payload);
-    if (size > MONGO_DOC_LIMIT_BYTES) {
+    const fullContentSize = byteSize(JSON.stringify(draft));
+    if (fullContentSize > MONGO_DOC_LIMIT_BYTES) {
       setMessage(
-        `Content is ${(size / 1024 / 1024).toFixed(1)}MB, over MongoDB's 16MB document limit. ` +
+        `Content is ${(fullContentSize / 1024 / 1024).toFixed(1)}MB, over MongoDB's 16MB document limit. ` +
           `Remove or shrink some uploaded images, or use image URLs instead.`,
       );
       return;
     }
-    if (size > VERCEL_PAYLOAD_LIMIT_BYTES) {
+    const payload = buildSavePayload(draft, liveContent);
+    const payloadSize = byteSize(payload);
+    if (payloadSize > VERCEL_PAYLOAD_LIMIT_BYTES) {
       setMessage(
-        `Content is ${(size / 1024 / 1024).toFixed(1)}MB — too large to save (${(VERCEL_PAYLOAD_LIMIT_BYTES / 1024 / 1024).toFixed(0)}MB server limit). ` +
+        `Changed content is ${(payloadSize / 1024 / 1024).toFixed(1)}MB — too large to save (${(VERCEL_PAYLOAD_LIMIT_BYTES / 1024 / 1024).toFixed(0)}MB server limit). ` +
           `Replace some uploaded images with URLs, or remove unused images, then save again.`,
       );
       return;
@@ -105,7 +146,7 @@ export function AdminDashboard() {
 
     setSaving(true);
     const res = await fetch("/api/content", {
-      method: "PUT",
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: payload,
     });
