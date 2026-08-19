@@ -7,14 +7,56 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useSiteContent } from "@/context/ContentContext";
 import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
+import { categoryImage } from "@/lib/images";
+import { slugifyFilterValue } from "@/lib/shop-filters";
 import { RoyalBackground } from "./effects/RoyalBackground";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "./effects/ScrollReveal";
 
 export function Categories() {
   const [hovered, setHovered] = useState<string | null>(null);
   const { content } = useSiteContent();
-  const { categories } = content;
+  const { categories, products } = content;
   const copy = content.sections.categories;
+  const visibleCategories = categories
+    .map((category) => {
+      const slug = slugifyFilterValue(category.slug || category.name);
+      const count = products.filter(
+        (product) => slugifyFilterValue(product.category) === slug,
+      ).length;
+
+      return {
+        ...category,
+        slug,
+        count: count || category.count,
+      };
+    })
+    .concat(
+      products
+        .filter(
+          (product, index, list) =>
+            list.findIndex(
+              (item) =>
+                slugifyFilterValue(item.category) ===
+                slugifyFilterValue(product.category),
+            ) === index &&
+            !categories.some(
+              (category) =>
+                slugifyFilterValue(category.slug || category.name) ===
+                slugifyFilterValue(product.category),
+            ),
+        )
+        .map((product) => {
+          const slug = slugifyFilterValue(product.category);
+          return {
+            name: product.category,
+            slug,
+            image: product.image || categoryImage(slug),
+            count: products.filter(
+              (item) => slugifyFilterValue(item.category) === slug,
+            ).length,
+          };
+        }),
+    );
 
   return (
     <section className="relative overflow-hidden bg-ivory py-24">
@@ -33,7 +75,7 @@ export function Categories() {
         </ScrollReveal>
 
         <StaggerContainer className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6 lg:gap-5">
-          {categories.map((category) => (
+          {visibleCategories.map((category) => (
             <StaggerItem key={category.slug}>
               <Link
                 href={`/shop?category=${category.slug}`}

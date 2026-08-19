@@ -5,6 +5,7 @@ import { CartDrawer } from "@/components/CartDrawer";
 import { CartProvider } from "@/context/CartContext";
 import { ContentProvider } from "@/context/ContentContext";
 import type { SiteContent } from "@/lib/content/types";
+import { ApiLoadingPopup } from "./ApiLoadingPopup";
 import { ClientOnly } from "./ClientOnly";
 import { CursorGlow } from "./CursorGlow";
 import { FloatingActions } from "./FloatingActions";
@@ -25,6 +26,7 @@ export function SiteEffects({
         <ClientOnly>
           <ScrollProgress />
           <CursorGlow />
+          <ApiLoadingPopup />
         </ClientOnly>
         <GrainOverlay />
         <PageTransition>{children}</PageTransition>

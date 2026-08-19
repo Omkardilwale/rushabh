@@ -16,9 +16,25 @@ export function parseShopSearchParams(
   };
 }
 
+export function slugifyFilterValue(value: string): string {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function titleFromSlug(slug: string): string {
+  return slug
+    .split("-")
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 function matchesOccasion(product: Product, occasion: string): boolean {
   const name = product.name.toLowerCase();
-  const category = product.category.toLowerCase();
+  const category = slugifyFilterValue(product.category);
   const badge = product.badge?.toLowerCase() ?? "";
 
   switch (occasion) {
@@ -63,23 +79,27 @@ export function matchesShopUrlFilters(
   filters: ShopUrlFilters,
 ): boolean {
   if (filters.category) {
-    const slug = filters.category.toLowerCase();
-    if (product.category.toLowerCase() !== slug) {
+    const slug = slugifyFilterValue(filters.category);
+    if (slugifyFilterValue(product.category) !== slug) {
       return false;
     }
   }
 
-  if (filters.metal === "gold") {
+  const metal = filters.metal ? slugifyFilterValue(filters.metal) : null;
+
+  if (metal === "gold") {
     if (!product.metal.toLowerCase().includes("gold")) {
       return false;
     }
-  } else if (filters.metal === "diamond") {
+  } else if (metal === "diamond") {
     const isDiamond =
       product.name.toLowerCase().includes("diamond") ||
       product.metal.toLowerCase() === "platinum";
     if (!isDiamond) {
       return false;
     }
+  } else if (metal && slugifyFilterValue(product.metal) !== metal) {
+    return false;
   }
 
   if (filters.occasion && !matchesOccasion(product, filters.occasion.toLowerCase())) {
@@ -103,11 +123,13 @@ export function getShopFilterLabel(filters: ShopUrlFilters): string | null {
     return labels[filters.occasion.toLowerCase()] ?? null;
   }
 
-  if (filters.metal === "gold") return "Gold Jewellery";
-  if (filters.metal === "diamond") return "Diamond Jewellery";
+  const metal = filters.metal ? slugifyFilterValue(filters.metal) : null;
+  if (metal === "gold") return "Gold Jewellery";
+  if (metal === "diamond") return "Diamond Jewellery";
+  if (metal) return `${titleFromSlug(metal)} Jewellery`;
 
   if (filters.category) {
-    return filters.category.charAt(0).toUpperCase() + filters.category.slice(1);
+    return titleFromSlug(slugifyFilterValue(filters.category));
   }
 
   return null;

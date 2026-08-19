@@ -23,6 +23,7 @@ import {
   getShopFilterLabel,
   matchesShopUrlFilters,
   parseShopSearchParams,
+  slugifyFilterValue,
 } from "@/lib/shop-filters";
 import { useCart } from "@/context/CartContext";
 
@@ -48,7 +49,38 @@ function ShopPageContent() {
   const { content } = useSiteContent();
   const { addToCart } = useCart();
   const { categories, products, shop } = content;
-  const metalFilters = shop.metalFilters;
+  const categoryFilters = useMemo(() => {
+    const options = categories.map((category) => ({
+      label: category.name,
+      value: slugifyFilterValue(category.slug || category.name),
+    }));
+
+    for (const product of products) {
+      const value = slugifyFilterValue(product.category);
+      if (value && !options.some((option) => option.value === value)) {
+        options.push({ label: product.category, value });
+      }
+    }
+
+    return options;
+  }, [categories, products]);
+  const metalFilters = useMemo(() => {
+    const options = ["All"];
+
+    for (const metal of shop.metalFilters) {
+      if (metal && !options.includes(metal)) {
+        options.push(metal);
+      }
+    }
+
+    for (const product of products) {
+      if (product.metal && !options.includes(product.metal)) {
+        options.push(product.metal);
+      }
+    }
+
+    return options;
+  }, [products, shop.metalFilters]);
   const priceFilters = shop.priceFilters.map((f) => ({
     ...f,
     max: f.max ?? Infinity,
@@ -71,7 +103,7 @@ function ShopPageContent() {
 
   useEffect(() => {
     if (urlFilters.category) {
-      setSelectedCategory(urlFilters.category.toLowerCase());
+      setSelectedCategory(slugifyFilterValue(urlFilters.category));
       return;
     }
     setSelectedCategory("all");
@@ -89,7 +121,7 @@ function ShopPageContent() {
       const price = computeProductPrice(product, content.store);
       const categoryMatch =
         selectedCategory === "all" ||
-        product.category.toLowerCase() === selectedCategory;
+        slugifyFilterValue(product.category) === selectedCategory;
       const metalMatch =
         selectedMetal === "All" || product.metal === selectedMetal;
       const priceMatch =
@@ -210,15 +242,15 @@ function ShopPageContent() {
                     >
                       All Categories
                     </FilterButton>
-                    {categories.map((cat) => (
+                    {categoryFilters.map((cat) => (
                       <FilterButton
-                        key={cat.slug}
-                        active={selectedCategory === cat.name.toLowerCase()}
+                        key={cat.value}
+                        active={selectedCategory === cat.value}
                         onClick={() =>
-                          setSelectedCategory(cat.name.toLowerCase())
+                          setSelectedCategory(cat.value)
                         }
                       >
-                        {cat.name}
+                        {cat.label}
                       </FilterButton>
                     ))}
                   </div>

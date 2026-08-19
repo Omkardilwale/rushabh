@@ -9,15 +9,27 @@ export default function AdminPage() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    let active = true;
+
     fetch("/api/admin/session")
       .then((res) => res.json())
       .then((data: { authenticated: boolean }) => {
+        if (!active) return;
         if (!data.authenticated) {
           router.replace("/admin/login");
           return;
         }
         setReady(true);
+      })
+      .catch(() => {
+        if (active) {
+          router.replace("/admin/login");
+        }
       });
+
+    return () => {
+      active = false;
+    };
   }, [router]);
 
   if (!ready) {
