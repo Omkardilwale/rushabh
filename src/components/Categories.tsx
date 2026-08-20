@@ -7,10 +7,10 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useSiteContent } from "@/context/ContentContext";
 import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
-import { categoryImage } from "@/lib/images";
 import { slugifyFilterValue } from "@/lib/shop-filters";
 import { RoyalBackground } from "./effects/RoyalBackground";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "./effects/ScrollReveal";
+
 
 export function Categories() {
   const [hovered, setHovered] = useState<string | null>(null);
@@ -50,7 +50,7 @@ export function Categories() {
           return {
             name: product.category,
             slug,
-            image: product.image || categoryImage(slug),
+            image: product.image || "",
             count: products.filter(
               (item) => slugifyFilterValue(item.category) === slug,
             ).length,
@@ -74,46 +74,55 @@ export function Categories() {
           )}
         </ScrollReveal>
 
-        <StaggerContainer className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6 lg:gap-5">
-          {visibleCategories.map((category) => (
-            <StaggerItem key={category.slug}>
-              <Link
-                href={`/shop?category=${category.slug}`}
-                className="group block"
-                onMouseEnter={() => setHovered(category.slug)}
-                onMouseLeave={() => setHovered(null)}
-              >
-                <JharokhaFrame
-                  tone="cream"
-                  className="transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-md"
+        {visibleCategories.length === 0 ? (
+          <div className="rounded-2xl border border-gold/20 bg-white/60 p-12 text-center backdrop-blur-sm">
+            <p className="font-serif text-2xl text-maroon">Categories Not Available</p>
+            <p className="mt-2 text-sm text-foreground/60">
+              No categories have been added to the catalog yet.
+            </p>
+          </div>
+        ) : (
+          <StaggerContainer className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6 lg:gap-5">
+            {visibleCategories.map((category) => (
+              <StaggerItem key={category.slug}>
+                <Link
+                  href={`/shop?category=${category.slug}`}
+                  className="group block"
+                  onMouseEnter={() => setHovered(category.slug)}
+                  onMouseLeave={() => setHovered(null)}
                 >
-                  <div className="jharokha-media relative aspect-[3/4] bg-cream">
-                    <HeritageCardTopBand />
-                    <JewelryImage
-                      src={category.image}
-                      alt={category.name}
-                      fill
-                      className="transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-maroon-dark/95 via-maroon-dark/25 to-transparent" />
+                  <JharokhaFrame
+                    tone="cream"
+                    className="transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-md"
+                  >
+                    <div className="jharokha-media relative aspect-[3/4] bg-cream">
+                      <HeritageCardTopBand />
+                      <JewelryImage
+                        src={category.image}
+                        alt={category.name}
+                        fill
+                        className="transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-maroon-dark/95 via-maroon-dark/25 to-transparent" />
 
-                    <div className="absolute bottom-0 left-0 right-0 border-t border-gold/25 bg-gradient-to-t from-maroon-dark/80 to-transparent p-3.5 text-center">
-                      <h3 className="font-serif text-base font-medium text-white lg:text-lg">
-                        {category.name}
-                      </h3>
-                      <motion.p
-                        className="mt-0.5 text-[10px] uppercase tracking-wider text-gold-light/90"
-                        animate={{ opacity: hovered === category.slug ? 1 : 0.75 }}
-                      >
-                        {category.count} designs
-                      </motion.p>
+                      <div className="absolute bottom-0 left-0 right-0 border-t border-gold/25 bg-gradient-to-t from-maroon-dark/80 to-transparent p-3.5 text-center">
+                        <h3 className="font-serif text-base font-medium text-white lg:text-lg">
+                          {category.name}
+                        </h3>
+                        <motion.p
+                          className="mt-0.5 text-[10px] uppercase tracking-wider text-gold-light/90"
+                          animate={{ opacity: hovered === category.slug ? 1 : 0.75 }}
+                        >
+                          {category.count} designs
+                        </motion.p>
+                      </div>
                     </div>
-                  </div>
-                </JharokhaFrame>
-              </Link>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
+                  </JharokhaFrame>
+                </Link>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        )}
 
         <ScrollReveal className="mt-14 text-center" delay={0.2}>
           <Link

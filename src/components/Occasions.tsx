@@ -70,54 +70,63 @@ export function Occasions() {
           )}
         </ScrollReveal>
 
-        <StaggerContainer
-          stagger={0.05}
-          className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-6"
-        >
-          {occasions.map((occasion) => {
-            const Icon = occasionIcons[occasion.name] ?? Sparkles;
-            const style = occasionStyles[occasion.name] ?? {
-              gradient: "from-maroon to-maroon-dark",
-              accent: "bg-cream text-maroon",
-            };
+        {!occasions || occasions.length === 0 ? (
+          <div className="rounded-2xl border border-gold/20 bg-ivory/80 p-12 text-center shadow-sm backdrop-blur-sm">
+            <p className="font-serif text-2xl text-maroon">Occasions Not Available</p>
+            <p className="mt-2 text-sm text-foreground/60">
+              No special occasions have been configured yet.
+            </p>
+          </div>
+        ) : (
+          <StaggerContainer
+            stagger={0.05}
+            className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-6"
+          >
+            {occasions.map((occasion) => {
+              const Icon = occasionIcons[occasion.name] ?? Sparkles;
+              const style = occasionStyles[occasion.name] ?? {
+                gradient: "from-maroon to-maroon-dark",
+                accent: "bg-cream text-maroon",
+              };
 
-            return (
-              <StaggerItem key={occasion.name}>
-                <Link
-                  href={`/shop?occasion=${occasion.name.toLowerCase().replace(" ", "-")}`}
-                  className="group block"
-                >
-                  <JharokhaFrame tone="ivory" className="transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-md">
-                  <div className="relative overflow-hidden bg-ivory">
-                    <HeritageCardTopBand />
-                    <div
-                      className={`relative flex h-24 items-center justify-center bg-gradient-to-br ${style.gradient} sm:h-28`}
-                    >
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(232,213,163,0.25),transparent_55%)]" />
+              return (
+                <StaggerItem key={occasion.name}>
+                  <Link
+                    href={`/shop?occasion=${occasion.name.toLowerCase().replace(" ", "-")}`}
+                    className="group block"
+                  >
+                    <JharokhaFrame tone="ivory" className="transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-md">
+                    <div className="relative overflow-hidden bg-ivory">
+                      <HeritageCardTopBand />
                       <div
-                        className={`relative flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-sm transition-transform duration-200 group-hover:scale-110 ${style.accent}`}
+                        className={`relative flex h-24 items-center justify-center bg-gradient-to-br ${style.gradient} sm:h-28`}
                       >
-                        <Icon className="h-6 w-6" strokeWidth={1.5} />
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(232,213,163,0.25),transparent_55%)]" />
+                        <div
+                          className={`relative flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-sm transition-transform duration-200 group-hover:scale-110 ${style.accent}`}
+                        >
+                          <Icon className="h-6 w-6" strokeWidth={1.5} />
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="border-t border-gold/25 p-4 text-center">
-                      <h3 className="font-serif text-base font-medium text-maroon sm:text-lg">
-                        {occasion.name}
-                      </h3>
-                      <p className="mt-1 text-[11px] uppercase tracking-wider text-foreground/45">
-                        {occasion.count}
-                      </p>
-                    </div>
+                      <div className="border-t border-gold/25 p-4 text-center">
+                        <h3 className="font-serif text-base font-medium text-maroon sm:text-lg">
+                          {occasion.name}
+                        </h3>
+                        <p className="mt-1 text-[11px] uppercase tracking-wider text-foreground/45">
+                          {occasion.count}
+                        </p>
+                      </div>
 
-                    <div className="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-gold transition-transform duration-200 group-hover:scale-x-100" />
-                  </div>
-                  </JharokhaFrame>
-                </Link>
-              </StaggerItem>
-            );
-          })}
-        </StaggerContainer>
+                      <div className="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-gold transition-transform duration-200 group-hover:scale-x-100" />
+                    </div>
+                    </JharokhaFrame>
+                  </Link>
+                </StaggerItem>
+              );
+            })}
+          </StaggerContainer>
+        )}
       </div>
     </section>
   );

@@ -36,21 +36,44 @@ export function Hero() {
   );
 
   const next = useCallback(() => {
+    if (!slides || slides.length === 0) return;
     setDirection(1);
     setCurrent((prev) => (prev + 1) % slides.length);
-  }, [slides.length]);
+  }, [slides]);
 
   const prev = useCallback(() => {
+    if (!slides || slides.length === 0) return;
     setDirection(-1);
     setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
-  }, [slides.length]);
+  }, [slides]);
 
   useEffect(() => {
+    if (!slides || slides.length === 0) return;
     const timer = setInterval(next, 6000);
     return () => clearInterval(timer);
-  }, [next]);
+  }, [next, slides]);
+
+  if (!slides || slides.length === 0) {
+    return (
+      <section ref={sectionRef} className="relative overflow-hidden bg-maroon-dark py-32 text-center text-white">
+        <SparkleField count={15} />
+        <div className="relative z-10 mx-auto max-w-xl px-4">
+          <p className="text-sm font-medium uppercase tracking-[0.25em] text-gold-light">
+            Hero Section
+          </p>
+          <h1 className="mt-3 font-serif text-3xl font-light text-white md:text-4xl">
+            Not Available
+          </h1>
+          <p className="mt-2 text-sm text-white/60">
+            No hero banner slides configured in API.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   const slide = slides[current];
+
 
   const slideVariants = {
     enter: (dir: number) => ({

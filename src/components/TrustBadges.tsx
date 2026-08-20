@@ -22,46 +22,52 @@ export function TrustBadges() {
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 lg:px-8">
-        <motion.div
-          className="grid grid-cols-2 gap-8 md:grid-cols-4"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.15 } },
-          }}
-        >
-          {trustFeatures.map((feature) => {
-            const Icon = iconMap[feature.icon as keyof typeof iconMap];
-            return (
-              <motion.div
-                key={feature.title}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
-                  },
-                }}
-                className="group flex flex-col items-center text-center"
-              >
+        {!trustFeatures || trustFeatures.length === 0 ? (
+          <div className="py-2 text-center text-gold-light/80">
+            <p className="font-serif text-lg">Trust Features Not Available</p>
+          </div>
+        ) : (
+          <motion.div
+            className="grid grid-cols-2 gap-8 md:grid-cols-4"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: 0.15 } },
+            }}
+          >
+            {trustFeatures.map((feature) => {
+              const Icon = iconMap[feature.icon as keyof typeof iconMap] ?? Shield;
+              return (
                 <motion.div
-                  className="mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-gold/30 bg-maroon-dark"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 400 }}
+                  key={feature.title}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
+                    },
+                  }}
+                  className="group flex flex-col items-center text-center"
                 >
-                  <Icon className="h-6 w-6 text-gold-light transition-colors group-hover:text-gold" />
+                  <motion.div
+                    className="mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-gold/30 bg-maroon-dark"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                  >
+                    <Icon className="h-6 w-6 text-gold-light transition-colors group-hover:text-gold" />
+                  </motion.div>
+                  <h3 className="font-serif text-lg font-medium text-gold-light">
+                    {feature.title}
+                  </h3>
+                  <p className="mt-1 text-sm text-white/55">{feature.description}</p>
                 </motion.div>
-                <h3 className="font-serif text-lg font-medium text-gold-light">
-                  {feature.title}
-                </h3>
-                <p className="mt-1 text-sm text-white/55">{feature.description}</p>
-              </motion.div>
-            );
-          })}
-        </motion.div>
+              );
+            })}
+          </motion.div>
+        )}
       </div>
     </section>
   );

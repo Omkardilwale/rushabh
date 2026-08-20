@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import mongoose from "mongoose";
+import { defaultSiteContent } from "../src/lib/content/defaults.ts";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
@@ -15,8 +16,13 @@ if (!uri) {
 const dbName = process.env.MONGODB_DB_NAME?.trim() || "rushabh_jewellers";
 const contentPath = path.join(root, "data", "site-content.json");
 
-const raw = await readFile(contentPath, "utf-8");
-const content = JSON.parse(raw);
+let content = defaultSiteContent;
+try {
+  const raw = await readFile(contentPath, "utf-8");
+  content = JSON.parse(raw);
+} catch {
+  console.log("data/site-content.json not found, seeding defaultSiteContent (empty catalog)...");
+}
 
 const SiteContentSchema = new mongoose.Schema(
   {
@@ -42,3 +48,4 @@ try {
 } finally {
   await mongoose.disconnect();
 }
+

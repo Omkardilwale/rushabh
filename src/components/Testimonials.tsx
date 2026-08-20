@@ -24,21 +24,25 @@ export function Testimonials() {
   );
 
   const next = useCallback(() => {
+    if (!testimonials || testimonials.length === 0) return;
     setDirection(1);
     setActive((prev) => (prev + 1) % testimonials.length);
-  }, []);
+  }, [testimonials]);
 
   const prev = useCallback(() => {
+    if (!testimonials || testimonials.length === 0) return;
     setDirection(-1);
     setActive((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  }, []);
+  }, [testimonials]);
 
   useEffect(() => {
+    if (!testimonials || testimonials.length === 0) return;
     const timer = setInterval(next, 7000);
     return () => clearInterval(timer);
-  }, [next]);
+  }, [next, testimonials]);
 
-  const testimonial = testimonials[active];
+  const testimonial = testimonials?.[active];
+
 
   const variants = {
     enter: (dir: number) => ({
@@ -73,80 +77,89 @@ export function Testimonials() {
           </h2>
         </ScrollReveal>
 
-        <div className="relative">
-          <div className="absolute -left-4 -top-4 text-gold/20">
-            <Quote className="h-16 w-16" />
+        {!testimonials || testimonials.length === 0 || !testimonial ? (
+          <div className="rounded-2xl border border-gold/20 bg-white/70 p-12 text-center shadow-sm backdrop-blur-sm">
+            <p className="font-serif text-2xl text-maroon">Testimonials Not Available</p>
+            <p className="mt-2 text-sm text-foreground/60">
+              No customer testimonials have been added yet.
+            </p>
           </div>
+        ) : (
+          <div className="relative">
+            <div className="absolute -left-4 -top-4 text-gold/20">
+              <Quote className="h-16 w-16" />
+            </div>
 
-          <JharokhaFrame tone="white" className="relative min-h-[280px] shadow-xl">
-            <div className="border-b border-gold/25" aria-hidden="true" />
-            <div className="p-10 md:p-14">
-            <AnimatePresence mode="wait" custom={direction}>
-              <motion.blockquote
-                key={active}
-                custom={direction}
-                variants={variants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                className="text-center"
+            <JharokhaFrame tone="white" className="relative min-h-[280px] shadow-xl">
+              <div className="border-b border-gold/25" aria-hidden="true" />
+              <div className="p-10 md:p-14">
+              <AnimatePresence mode="wait" custom={direction}>
+                <motion.blockquote
+                  key={active}
+                  custom={direction}
+                  variants={variants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  className="text-center"
+                >
+                  <div className="mb-6 flex justify-center gap-1">
+                    {Array.from({ length: testimonial.rating || 5 }).map((_, i) => (
+                      <Star key={i} className="h-5 w-5 fill-gold text-gold" />
+                    ))}
+                  </div>
+                  <p className="font-serif text-xl leading-relaxed text-foreground/80 md:text-2xl">
+                    &ldquo;{testimonial.text}&rdquo;
+                  </p>
+                  <footer className="mt-8">
+                    <p className="font-serif text-lg font-medium text-maroon">
+                      {testimonial.name}
+                    </p>
+                    <p className="text-sm text-foreground/50">
+                      {testimonial.location}
+                    </p>
+                  </footer>
+                </motion.blockquote>
+              </AnimatePresence>
+              </div>
+              <div className="border-t border-gold/25" aria-hidden="true" />
+            </JharokhaFrame>
+
+            <div className="mt-8 flex items-center justify-center gap-6">
+              <button
+                type="button"
+                onClick={prev}
+                className="rounded-full border border-gold/30 bg-white p-2.5 text-maroon transition-all hover:bg-cream"
+                aria-label="Previous testimonial"
               >
-                <div className="mb-6 flex justify-center gap-1">
-                  {Array.from({ length: testimonial.rating }).map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-gold text-gold" />
-                  ))}
-                </div>
-                <p className="font-serif text-xl leading-relaxed text-foreground/80 md:text-2xl">
-                  &ldquo;{testimonial.text}&rdquo;
-                </p>
-                <footer className="mt-8">
-                  <p className="font-serif text-lg font-medium text-maroon">
-                    {testimonial.name}
-                  </p>
-                  <p className="text-sm text-foreground/50">
-                    {testimonial.location}
-                  </p>
-                </footer>
-              </motion.blockquote>
-            </AnimatePresence>
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+
+              <div className="flex gap-2">
+                {testimonials.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => goTo(i)}
+                    className={`h-2 rounded-full transition-all ${
+                      i === active ? "w-8 bg-maroon" : "w-2 bg-maroon/20"
+                    }`}
+                    aria-label={`Testimonial ${i + 1}`}
+                  />
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={next}
+                className="rounded-full border border-gold/30 bg-white p-2.5 text-maroon transition-all hover:bg-cream"
+                aria-label="Next testimonial"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
             </div>
-            <div className="border-t border-gold/25" aria-hidden="true" />
-          </JharokhaFrame>
-
-          <div className="mt-8 flex items-center justify-center gap-6">
-            <button
-              type="button"
-              onClick={prev}
-              className="rounded-full border border-gold/30 bg-white p-2.5 text-maroon transition-all hover:bg-cream"
-              aria-label="Previous testimonial"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-
-            <div className="flex gap-2">
-              {testimonials.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => goTo(i)}
-                  className={`h-2 rounded-full transition-all ${
-                    i === active ? "w-8 bg-maroon" : "w-2 bg-maroon/20"
-                  }`}
-                  aria-label={`Testimonial ${i + 1}`}
-                />
-              ))}
-            </div>
-
-            <button
-              type="button"
-              onClick={next}
-              className="rounded-full border border-gold/30 bg-white p-2.5 text-maroon transition-all hover:bg-cream"
-              aria-label="Next testimonial"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

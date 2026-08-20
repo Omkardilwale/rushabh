@@ -98,6 +98,10 @@ export function ImageMarquee() {
     x.set(next);
   });
 
+  if (!items || items.length === 0) {
+    return null;
+  }
+
   return (
     <section className="relative overflow-hidden bg-cream py-6">
       <RoyalBackground density="light" />

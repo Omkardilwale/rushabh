@@ -10,7 +10,6 @@ import type {
   Testimonial,
   TrustFeature,
 } from "@/lib/content/types";
-import { images } from "@/lib/images";
 
 export function nextProductId(products: Product[]): number {
   if (products.length === 0) return 1;
@@ -32,7 +31,7 @@ export function emptyProduct(id: number): Product {
     category: "Rings",
     price: 25000,
     metal: "22K Gold",
-    image: images.products.ringFloral,
+    image: "",
     rating: 4.5,
     weight: 5,
     rateType: "gold22k",
@@ -45,7 +44,7 @@ export function emptyCategory(existingSlugs: string[]): Category {
   return {
     name: "New Category",
     slug,
-    image: images.categories.rings,
+    image: "",
     count: 0,
   };
 }
@@ -54,14 +53,14 @@ export function emptyCollection(): Collection {
   return {
     name: "New Collection",
     description: "Collection description",
-    image: images.collections.modern,
+    image: "",
     tag: "New",
   };
 }
 
 export function emptyHeroSlide(): HeroSlide {
   return {
-    image: images.hero.heritage,
+    image: "",
     tagline: "New Collection",
     title: "Your",
     accent: "Title",

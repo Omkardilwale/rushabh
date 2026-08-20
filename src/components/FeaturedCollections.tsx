@@ -17,17 +17,20 @@ export function FeaturedCollections() {
   const copy = content.sections.featuredCollections;
 
   const next = useCallback(() => {
+    if (!items || items.length === 0) return;
     setActive((prev) => (prev + 1) % items.length);
-  }, [items.length]);
+  }, [items]);
 
   const prev = useCallback(() => {
+    if (!items || items.length === 0) return;
     setActive((prev) => (prev - 1 + items.length) % items.length);
-  }, [items.length]);
+  }, [items]);
 
   useEffect(() => {
+    if (!items || items.length === 0) return;
     const timer = setInterval(next, 3500);
     return () => clearInterval(timer);
-  }, [next]);
+  }, [next, items]);
 
   return (
     <section id="collections" className="relative overflow-hidden bg-cream py-24">
@@ -51,7 +54,15 @@ export function FeaturedCollections() {
           </Link>
         </ScrollReveal>
 
-        <div className="relative pb-2">
+        {!items || items.length === 0 ? (
+          <div className="rounded-2xl border border-gold/20 bg-ivory/80 p-12 text-center shadow-sm backdrop-blur-sm">
+            <p className="font-serif text-2xl text-maroon">Collections Not Available</p>
+            <p className="mt-2 text-sm text-foreground/60">
+              No featured collections have been added yet.
+            </p>
+          </div>
+        ) : (
+          <div className="relative pb-2">
           <JharokhaFrame tone="cream" className="relative aspect-[16/9] md:aspect-[21/9]">
             <AnimatePresence mode="wait">
               <motion.div
@@ -163,7 +174,10 @@ export function FeaturedCollections() {
             ))}
           </div>
         </div>
+        )}
       </div>
     </section>
   );
 }
+
+

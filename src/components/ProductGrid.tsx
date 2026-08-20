@@ -191,20 +191,29 @@ export function ProductGrid() {
           </div>
         </ScrollReveal>
 
-        <StaggerContainer
-          ref={scrollRef}
-          stagger={0.08}
-          className="scrollbar-hide -mx-4 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 lg:grid-cols-4"
-        >
-          {products.map((product) => (
-            <StaggerItem
-              key={product.id}
-              className="w-[72vw] shrink-0 snap-center sm:w-[45vw] md:w-auto"
-            >
-              <ProductCard product={product} store={content.store} />
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
+        {!products || products.length === 0 ? (
+          <div className="rounded-2xl border border-gold/20 bg-white/70 p-12 text-center shadow-sm backdrop-blur-sm">
+            <p className="font-serif text-2xl text-maroon">Products Not Available</p>
+            <p className="mt-2 text-sm text-foreground/60">
+              No top seller products are currently available in the catalog.
+            </p>
+          </div>
+        ) : (
+          <StaggerContainer
+            ref={scrollRef}
+            stagger={0.08}
+            className="scrollbar-hide -mx-4 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 lg:grid-cols-4"
+          >
+            {products.map((product) => (
+              <StaggerItem
+                key={product.id}
+                className="w-[72vw] shrink-0 snap-center sm:w-[45vw] md:w-auto"
+              >
+                <ProductCard product={product} store={content.store} />
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        )}
       </div>
     </section>
   );

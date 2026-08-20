@@ -16,19 +16,27 @@ export function GoldRateTicker() {
   } = content.store;
 
   const items = [
-    goldRate.rate24k > 0 ? `24K Gold: ${formatPrice(goldRate.rate24k)}/g` : null,
-    `22K Gold: ${formatPrice(goldRate.rate22k)}/g`,
-    `18K Gold: ${formatPrice(goldRate.rate18k)}/g`,
+    goldRate.rate24k > 0
+      ? `24K Gold: ${formatPrice(goldRate.rate24k)}/g`
+      : `24K Gold: Not Available`,
+    goldRate.rate22k > 0
+      ? `22K Gold: ${formatPrice(goldRate.rate22k)}/g`
+      : `22K Gold: Not Available`,
+    goldRate.rate18k > 0
+      ? `18K Gold: ${formatPrice(goldRate.rate18k)}/g`
+      : `18K Gold: Not Available`,
     silverRate.rate999 > 0
       ? `Silver 999: ${formatPrice(silverRate.rate999)}/g`
-      : null,
+      : `Silver 999: Not Available`,
     diamondRate?.ratePerCarat > 0
       ? `Diamond: ${formatPrice(diamondRate.ratePerCarat)}/ct`
       : null,
-    diamondRateLabel.trim() || null,
-    ...tickerExtras,
-    `Free Insured Shipping on orders above ${formatPrice(freeShippingThreshold)}`,
-    `Rates updated: ${goldRate.updatedAt}`,
+    diamondRateLabel?.trim() || null,
+    ...(tickerExtras || []),
+    freeShippingThreshold > 0
+      ? `Free Insured Shipping on orders above ${formatPrice(freeShippingThreshold)}`
+      : null,
+    goldRate.updatedAt ? `Rates updated: ${goldRate.updatedAt}` : null,
   ].filter((item): item is string => Boolean(item));
 
   const tickerContent = [...items, ...items].join("   •   ");
