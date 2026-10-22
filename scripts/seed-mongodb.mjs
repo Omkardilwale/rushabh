@@ -37,14 +37,23 @@ const SiteContentModel =
   mongoose.models.SiteContent ||
   mongoose.model("SiteContent", SiteContentSchema);
 
+const force = process.argv.includes("--force");
+
 try {
   await mongoose.connect(uri, { dbName, serverSelectionTimeoutMS: 10000 });
-  await SiteContentModel.updateOne(
-    { key: "main" },
-    { $set: { content, updatedAt: new Date() } },
-    { upsert: true },
-  );
-  console.log(`Seeded site content to MongoDB (${dbName}.site_content)`);
+  const existing = await SiteContentModel.findOne({ key: "main" }).lean();
+  if (existing?.content && !force) {
+    console.log(
+      "MongoDB already has site content. Skipping seed so uploaded data is not overwritten. Pass --force to replace it.",
+    );
+  } else {
+    await SiteContentModel.updateOne(
+      { key: "main" },
+      { $set: { content, updatedAt: new Date() } },
+      { upsert: true },
+    );
+    console.log(`Seeded site content to MongoDB (${dbName}.site_content)`);
+  }
 } finally {
   await mongoose.disconnect();
 }

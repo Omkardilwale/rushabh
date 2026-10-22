@@ -22,15 +22,14 @@ import {
   computeProductPrice,
   formatPrice,
   formatWeight,
-  getProductById,
   getProductUnit,
-  getRelatedProducts,
+  inferProductRateType,
 } from "@/lib/data";
 
 export function ProductDetail({ id }: { id: number }) {
-  const product = getProductById(id);
   const { addToCart } = useCart();
   const { content } = useSiteContent();
+  const product = content.products.find((item) => item.id === id);
   const productDetail = content.productDetail;
 
   if (!product) {
@@ -55,9 +54,14 @@ export function ProductDetail({ id }: { id: number }) {
     );
   }
 
-  const related = getRelatedProducts(id);
+  const related = content.products
+    .filter((item) => item.id !== id && item.category === product.category)
+    .slice(0, 4);
   const price = computeProductPrice(product, content.store);
-  const weightLabel = formatWeight(product.weight, getProductUnit(product.rateType));
+  const weightLabel = formatWeight(
+    product.weight,
+    getProductUnit(inferProductRateType(product)),
+  );
 
   return (
     <>

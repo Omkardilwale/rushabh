@@ -20,7 +20,10 @@ export async function GET(request: Request) {
   }
 
   try {
-    const result = await syncMetalRates({ force: cron || force });
+    const result = await syncMetalRates({
+      force: admin && force,
+      skipThrottle: admin && force,
+    });
     if (result.skipped) {
       return NextResponse.json({
         ok: true,

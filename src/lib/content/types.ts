@@ -19,12 +19,16 @@ export type Product = {
   badge?: string;
   rating: number;
   description?: string;
-  /** Net weight in grams (shown on cards, used for live price calc). */
+  /** Net weight in grams (or carats when rateType is diamond). */
   weight?: number;
   /** Which live metal rate to apply to the weight. "none" = use manual price. */
   rateType?: ProductRateType;
-  /** Extra/custom charges (making, stones, GST, etc.) added to the metal value. */
+  /** Making charges added on top of metal value. */
   makingCharges?: number;
+  /** Extra charges (stones, hallmark, GST lump, etc.) added on top of metal value. */
+  otherCharges?: number;
+  /** Wastage as a percent of metal value, e.g. 12 means +12%. */
+  wastagePercent?: number;
 };
 
 export type Category = {

@@ -1,0 +1,938 @@
+{
+    "site": {
+        "name": "Anup Jewellers",
+        "shortName": "Anup",
+        "tagline": "Jewellers",
+        "url": "https://anupjewellers.in",
+        "description": "Shop exquisite gold and diamond jewellery online. BIS hallmarked, handcrafted designs for weddings, festivals, and everyday elegance.",
+        "copyrightYear": 2026,
+        "brandBlurb": "Celebrating the rich heritage of Indian jewellery with exquisite craftsmanship and timeless design. BIS hallmarked, trusted quality.",
+        "logoLetter": "A"
+    },
+    "contact": {
+        "enquiryEmail": "omkar.dilwale.od@gmail.com",
+        "whatsappNumber": "8830688733",
+        "contactPhone": ""
+    },
+    "store": {
+        "goldRate": {
+            "rate24k": 14600,
+            "rate22k": 13432,
+            "rate18k": 11100,
+            "updatedAt": "Not Available"
+        },
+        "silverRate": {
+            "rate999": 210,
+            "updatedAt": "Not Available"
+        },
+        "diamondRate": {
+            "ratePerCarat": 75000,
+            "updatedAt": "Not Available"
+        },
+        "ratesMode": "manual",
+        "ratesLastSyncedAt": "",
+        "diamondRateLabel": "Diamond: Price on enquiry",
+        "promo": {
+            "code": "WELCOME500",
+            "discount": 500
+        },
+        "freeShippingThreshold": 25000,
+        "storeLocation": "Malshiras , District:-Solapur",
+        "tickerExtras": [
+            "BIS Hallmarked Jewellery",
+            "Lifetime Exchange Available"
+        ],
+        "marqueeExtras": [
+            "BIS Hallmarked",
+            "Free Shipping",
+            "Lifetime Exchange",
+            "Handcrafted in India"
+        ]
+    },
+    "navigation": {
+        "primary": [
+            {
+                "label": "Shop All",
+                "href": "/shop"
+            },
+            {
+                "label": "Gold",
+                "href": "/shop?metal=gold"
+            },
+            {
+                "label": "Diamond",
+                "href": "/shop?metal=diamond"
+            },
+            {
+                "label": "Bridal",
+                "href": "/shop?occasion=bridal"
+            },
+            {
+                "label": "Collections",
+                "href": "/#collections"
+            },
+            {
+                "label": "Stores",
+                "href": "/#stores"
+            }
+        ],
+        "secondary": [
+            {
+                "label": "New Arrivals",
+                "href": "/shop"
+            },
+            {
+                "label": "Book Appointment",
+                "href": "/#consultation"
+            },
+            {
+                "label": "Video Consultation",
+                "href": "/#consultation"
+            }
+        ],
+        "mobileExtras": [
+            {
+                "label": "New Arrivals",
+                "href": "/shop"
+            },
+            {
+                "label": "Book Appointment",
+                "href": "/#consultation"
+            },
+            {
+                "label": "Video Consultation",
+                "href": "/#consultation"
+            }
+        ]
+    },
+    "footer": {
+        "shop": [
+            {
+                "label": "Gold Jewellery",
+                "href": "/shop?metal=gold"
+            },
+            {
+                "label": "Diamond Jewellery",
+                "href": "/shop?metal=diamond"
+            },
+            {
+                "label": "Bridal Collection",
+                "href": "/shop?occasion=bridal"
+            },
+            {
+                "label": "New Arrivals",
+                "href": "/shop"
+            },
+            {
+                "label": "Gifts",
+                "href": "/shop?occasion=gifting"
+            }
+        ],
+        "help": [
+            {
+                "label": "Track Order",
+                "href": "#"
+            },
+            {
+                "label": "Shipping Info",
+                "href": "#"
+            },
+            {
+                "label": "Returns & Exchange",
+                "href": "#"
+            },
+            {
+                "label": "Ring Size Guide",
+                "href": "#"
+            },
+            {
+                "label": "Jewellery Care",
+                "href": "#"
+            }
+        ],
+        "company": [
+            {
+                "label": "About Us",
+                "href": "#"
+            },
+            {
+                "label": "Our Stores",
+                "href": "#stores"
+            },
+            {
+                "label": "Careers",
+                "href": "#"
+            },
+            {
+                "label": "Blog",
+                "href": "#"
+            },
+            {
+                "label": "Contact",
+                "href": "#"
+            }
+        ],
+        "legal": [
+            {
+                "label": "Privacy Policy",
+                "href": "#"
+            },
+            {
+                "label": "Terms & Conditions",
+                "href": "#"
+            },
+            {
+                "label": "BIS Certification",
+                "href": "#"
+            }
+        ],
+        "storeHeading": "Find a Store Near You",
+        "storeCta": "Locate Store"
+    },
+    "hero": {
+        "slides": [
+            {
+                "image": "/media/619ff34a0714d667.jpg",
+                "tagline": "Shwet Collection",
+                "title": "Suvarna Pratishtha Necklace",
+                "accent": "Jadau Necklace ",
+                "subtitle": "",
+                "description": "A magnificent expression of royal Indian craftsmanship, the Suvarna Pratishtha Necklace features intricate traditional gold artistry, elegant coin-inspired detailing, and a grand statement pendant adorned with ruby-red accents and emerald-green elements. Inspired by the timeless beauty of heritage jewellery, this necklace is perfect for weddings, bridal wear, festive occasions, and traditional celebrations."
+            },
+            {
+                "image": "/media/64714691fca705dd.jpg",
+                "tagline": "Kritika Bridal Collection ",
+                "title": "Bridal Set",
+                "accent": "Antique ",
+                "subtitle": "Necklace set with jadau Swarovski ",
+                "description": "Inspired by the traditions of Maharashtra designed for the upcoming brides "
+            }
+        ],
+        "stats": [
+            {
+                "value": "20+",
+                "label": "Years Legacy"
+            },
+            {
+                "value": "15K+",
+                "label": "Happy Customers"
+            },
+            {
+                "value": "100%",
+                "label": "BIS Certified"
+            }
+        ],
+        "primaryCta": {
+            "label": "Shop Collection",
+            "href": "/shop"
+        },
+        "secondaryCta": {
+            "label": "Virtual Try-On",
+            "href": "#consultation"
+        }
+    },
+    "sections": {
+        "categories": {
+            "eyebrow": "Explore",
+            "heading": "Shop by Category",
+            "subtitle": "Infinite designs, handcrafted for utmost brilliance.",
+            "ctaLabel": "View All Categories",
+            "ctaHref": "/shop"
+        },
+        "featuredCollections": {
+            "eyebrow": "Curated For You",
+            "heading": "Featured Collections"
+        },
+        "productGrid": {
+            "eyebrow": "Trending Now",
+            "heading": "Top Sellers",
+            "subtitle": "Products our customers love the most.",
+            "ctaLabel": "Explore All",
+            "ctaHref": "/shop"
+        },
+        "occasions": {
+            "eyebrow": "For Every Moment",
+            "heading": "Shop for Occasions",
+            "subtitle": "Find the perfect piece for life's special moments.",
+            "ctaLabel": "Shop Collection",
+            "ctaHref": "/shop"
+        },
+        "testimonials": {
+            "eyebrow": "From Our Patrons",
+            "heading": "Customer Stories"
+        },
+        "consultation": {
+            "eyebrow": "We're Here to Help",
+            "heading": "Connect With Us",
+            "subtitle": "Our experts are always available to guide you at your convenience."
+        },
+        "shop": {
+            "heading": "Our Collection",
+            "subtitle": "exquisite designs found"
+        }
+    },
+    "consultation": {
+        "options": [
+            {
+                "type": "video",
+                "title": "Video Consultation",
+                "description": "Connect with our jewellery experts via live video call",
+                "cta": "Schedule Now"
+            },
+            {
+                "type": "appointment",
+                "title": "Store Appointment",
+                "description": "Visit our showroom for a personalized experience",
+                "cta": "Book Visit"
+            },
+            {
+                "type": "whatsapp",
+                "title": "WhatsApp Chat",
+                "description": "Get instant answers and recommendations",
+                "cta": "Chat Now"
+            },
+            {
+                "type": "callback",
+                "title": "Call Back",
+                "description": "Request a call from our jewellery consultant",
+                "cta": "Request Call"
+            }
+        ]
+    },
+    "shop": {
+        "bannerImage": "",
+        "metalFilters": [
+            "All",
+            "18K Gold",
+            "22K Gold",
+            "Platinum"
+        ],
+        "priceFilters": [
+            {
+                "label": "All Prices",
+                "min": 0,
+                "max": null
+            },
+            {
+                "label": "Under ₹30,000",
+                "min": 0,
+                "max": 30000
+            },
+            {
+                "label": "₹30,000 - ₹60,000",
+                "min": 30000,
+                "max": 60000
+            },
+            {
+                "label": "Above ₹60,000",
+                "min": 60000,
+                "max": null
+            }
+        ],
+        "emptyTitle": "No products found",
+        "emptyMessage": "Try adjusting your filters"
+    },
+    "categories": [],
+    "collections": [
+        {
+            "name": "Shwet Collection ",
+            "description": "A beautiful blend of royal tradition and timeless elegance, the Shwet Rajsi Choker showcases intricate gold craftsmanship, delicate pearl-like detailing, and exquisite red and green stone accents. Its layered design and graceful hanging beads create a luxurious statement, perfect for weddings, festive occasions, and grand traditional celebrations.",
+            "image": "/media/1a50fb6940422af2.jpg",
+            "tag": "Shwet Swarna Padma Collection "
+        },
+        {
+            "name": "Rajvanshi Collection ",
+            "description": "A regal gold necklace featuring intricate traditional motifs, exquisite red and white meenakari work, and elegant temple-inspired detailing. Its lotus-inspired centerpiece reflects timeless Indian craftsmanship and royal elegance.",
+            "image": "/media/2b779d4673b49ce7.jpg",
+            "tag": "Lotus Enamel Necklace "
+        }
+    ],
+    "products": [
+        {
+            "id": 48,
+            "name": "Temple Floral Kangan",
+            "category": "Temple Kangan",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/2b99fd9714d94f0c.jpg",
+            "rating": 4.5,
+            "weight": 58.89,
+            "rateType": "gold22k",
+            "makingCharges": 76557
+        },
+        {
+            "id": 47,
+            "name": "Temple Traditional Tode",
+            "category": "Temple Kangan",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/930acb68902fba2e.jpg",
+            "rating": 4.5,
+            "weight": 38.18,
+            "rateType": "gold22k",
+            "makingCharges": 49634
+        },
+        {
+            "id": 46,
+            "name": "Fusion Multi Layer Necklace ",
+            "category": "Shwet Heritage Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/e37774f72db75e22.jpg",
+            "rating": 4.5,
+            "weight": 91.87,
+            "rateType": "gold22k",
+            "makingCharges": 174553
+        },
+        {
+            "id": 45,
+            "name": "Rajnandini Heritage Necklace ",
+            "category": "Shwet Heritage Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/c8e7504b185a9b9a.jpg",
+            "rating": 4.5,
+            "weight": 37.87,
+            "rateType": "gold22k",
+            "makingCharges": 71953
+        },
+        {
+            "id": 44,
+            "name": "Manmohini Moti Necklace ",
+            "category": "Shwet Heritage Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/57b44cf8ee9617a5.jpg",
+            "rating": 4.5,
+            "weight": 82.07,
+            "rateType": "gold22k",
+            "makingCharges": 155933
+        },
+        {
+            "id": 43,
+            "name": "Chandrakala Heritage Necklace ",
+            "category": "Shwet Heritage Long Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/111014edbf46711d.jpg",
+            "rating": 4.5,
+            "weight": 83.09,
+            "rateType": "gold22k",
+            "makingCharges": 157871
+        },
+        {
+            "id": 42,
+            "name": "Heritage Green Beads Jadau Necklace ",
+            "category": "Shwet Heritage Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/34c873d7a798e4a5.jpg",
+            "rating": 4.5,
+            "weight": 35.91,
+            "rateType": "gold22k",
+            "makingCharges": 68229
+        },
+        {
+            "id": 41,
+            "name": "Shwet Multi layer Heritage Necklace ",
+            "category": "Shwet Heritage Long Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/9bba513e15feb6ab.jpg",
+            "rating": 4.5,
+            "weight": 105.09,
+            "rateType": "gold22k",
+            "makingCharges": 199671
+        },
+        {
+            "id": 40,
+            "name": "Vijayanti Heritage Necklace ",
+            "category": "Shwet Heritage Long Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/61d4f6b57b75d715.jpg",
+            "rating": 4.5,
+            "weight": 77.43,
+            "rateType": "gold22k",
+            "makingCharges": 147117
+        },
+        {
+            "id": 39,
+            "name": "Hemashree Heritage Necklace ",
+            "category": "Shwet Heritage Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/02b7ccca32611077.jpg",
+            "rating": 4.5,
+            "weight": 76.15,
+            "rateType": "gold22k",
+            "makingCharges": 144685,
+            "description": "Celebrate the beauty of Indian heritage with the Hemashree Heritage Necklace a masterpiece of traditional artistry and sophisticated design. Its ornate choker silhouette, colourful stone embellishments, and detailed gold beadwork create a rich, regal appearance that beautifully complements ethnic attire."
+        },
+        {
+            "id": 38,
+            "name": "Rajkamal Heritage Necklace ",
+            "category": "Shwet Heritage Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/619ff34a0714d667.jpg",
+            "rating": 4.5,
+            "weight": 96.08,
+            "rateType": "gold22k",
+            "makingCharges": 182552,
+            "description": "Rooted in the richness of Indian tradition, the Rajkamal Heritage Necklace is designed for those who appreciate statement jewellery with a royal touch. Its intricately crafted links, pearl-like strands, colourful accents, and cascading gold beads create an elegant silhouette suited to weddings, family celebrations, and special occasions."
+        },
+        {
+            "id": 37,
+            "name": "Padma Ratna Necklace ",
+            "category": "Shwet Heritage Long Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/6f498e1ef8290f27.jpg",
+            "rating": 4.5,
+            "weight": 98.78,
+            "rateType": "gold22k",
+            "makingCharges": 187682,
+            "description": "Graceful, majestic, and rich in traditional character, the Padma Ratna Necklace is designed for those who cherish timeless Indian craftsmanship. Featuring intricate floral-inspired motifs, elegant stone accents, and cascading gold bead danglers, this statement piece brings a touch of royal splendour to every special occasion."
+        },
+        {
+            "id": 36,
+            "name": "Swarnika Signature Necklace",
+            "category": "Shwet Heritage Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/1a50fb6940422af2.jpg",
+            "rating": 4.5,
+            "weight": 86.6,
+            "rateType": "gold22k",
+            "makingCharges": 164540,
+            "description": "Celebrate the beauty of Indian heritage with the Swarnika Signature Necklace , a masterpiece of traditional artistry and sophisticated design. Its ornate choker silhouette, colourful stone embellishments, and detailed gold beadwork create a rich, regal appearance that beautifully complements ethnic attire."
+        },
+        {
+            "id": 35,
+            "name": "Kanakdeep Necklace",
+            "category": "Shwet Heritage Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/afd791f05b7c0ab9.jpg",
+            "rating": 4.5,
+            "weight": 85.77,
+            "rateType": "gold22k",
+            "makingCharges": 162963,
+            "description": "Inspired by the grandeur of royal Indian jewellery, the Kanakdeep Necklace features elaborate traditional motifs, intricate gold patterns, and a magnificent central pendant. The delicate dangling elements add movement and charm, making it an ideal choice for brides and women who appreciate heritage-inspired luxury."
+        },
+        {
+            "id": 34,
+            "name": "Padmini Temple Long Necklace",
+            "category": "Temple Long Necklace",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/bdc18e41047856c5.jpg",
+            "rating": 4.5,
+            "weight": 81.74,
+            "rateType": "gold22k",
+            "makingCharges": 106262
+        },
+        {
+            "id": 33,
+            "name": "Royal Ruby Nakshi Bangles Set",
+            "category": "Bangle Set",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/8631090aae0ec899.jpg",
+            "rating": 4.5,
+            "weight": 108.24,
+            "rateType": "gold22k",
+            "makingCharges": 140712
+        },
+        {
+            "id": 32,
+            "name": "Rajsi Nakshi Bangles set",
+            "category": "Bangle Set",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/9a12d6b44d6c0b46.jpg",
+            "rating": 4.5,
+            "weight": 104.35,
+            "rateType": "gold22k",
+            "makingCharges": 135655
+        },
+        {
+            "id": 31,
+            "name": "Swarna Samrajya Bangles set",
+            "category": "Bangle Set",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/aa6685a5bf6043fc.jpg",
+            "rating": 4.5,
+            "weight": 101.34,
+            "rateType": "gold22k",
+            "makingCharges": 131742
+        },
+        {
+            "id": 29,
+            "name": "Temple traditional Tode",
+            "category": "Temple Kangan ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/458511c14c12927b.jpg",
+            "rating": 4.5,
+            "weight": 70,
+            "rateType": "gold22k",
+            "makingCharges": 91000
+        },
+        {
+            "id": 28,
+            "name": "Swarna Ratna Bangles Set",
+            "category": "Bangle Set",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/6e2620476e55a03d.jpg",
+            "rating": 4.5,
+            "weight": 90.45,
+            "rateType": "gold22k",
+            "makingCharges": 117585
+        },
+        {
+            "id": 27,
+            "name": "Heritage Lakshmi Bangles set",
+            "category": "Bangle Set",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/2e3cc4949054df18.jpg",
+            "rating": 4.5,
+            "weight": 89.71,
+            "rateType": "gold22k",
+            "makingCharges": 116623
+        },
+        {
+            "id": 26,
+            "name": "Royal Nakshatra Bangle Set",
+            "category": "Bangle Set ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/7aa097b6cbe2dbad.jpg",
+            "rating": 4.5,
+            "weight": 91.22,
+            "rateType": "gold22k",
+            "makingCharges": 118586
+        },
+        {
+            "id": 25,
+            "name": "Temple Peacock Choker",
+            "category": "Temple Choker",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/919c063ea54de066.jpg",
+            "rating": 4.5,
+            "weight": 43.42,
+            "rateType": "gold22k",
+            "makingCharges": 56446
+        },
+        {
+            "id": 24,
+            "name": "Temple Layered Choker",
+            "category": "Temple Choker",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/bf7b3f7bd94ba00c.jpg",
+            "rating": 4.5,
+            "weight": 27.13,
+            "rateType": "gold22k",
+            "makingCharges": 35270
+        },
+        {
+            "id": 23,
+            "name": "Light Weight Peacock Temple Choker",
+            "category": "Temple Choker",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/c5fac7833eba1b1d.jpg",
+            "rating": 4.5,
+            "weight": 22.11,
+            "rateType": "gold22k",
+            "makingCharges": 28743
+        },
+        {
+            "id": 22,
+            "name": "Temple Round Necklace with Heart Motifs",
+            "category": "Temple Necklace",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/cb32a7552c415a51.jpg",
+            "rating": 4.5,
+            "weight": 45.31,
+            "rateType": "gold22k",
+            "makingCharges": 58900
+        },
+        {
+            "id": 21,
+            "name": "Temple Long U Shape Necklace",
+            "category": "Temple Long Necklace",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/26b5c5199e9b75ba.jpg",
+            "rating": 4.5,
+            "weight": 56.76,
+            "rateType": "gold22k",
+            "makingCharges": 73788
+        },
+        {
+            "id": 20,
+            "name": "Temple Peacock Necklace ",
+            "category": "Temple Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/4fc4150e2133d6e8.jpg",
+            "rating": 4.5,
+            "weight": 36.79,
+            "rateType": "gold22k",
+            "makingCharges": 47827
+        },
+        {
+            "id": 19,
+            "name": "Three Layered Temple Long Necklace ",
+            "category": "Temple Layered Long Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/712a444e072a71bb.jpg",
+            "rating": 4.5,
+            "weight": 31.48,
+            "rateType": "gold22k",
+            "makingCharges": 40924
+        },
+        {
+            "id": 18,
+            "name": "Meenakari Temple Long Necklace ",
+            "category": "Temple Layered Long Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/41d13931825f43d5.jpg",
+            "rating": 4.5,
+            "weight": 41.38,
+            "rateType": "gold22k",
+            "makingCharges": 53794
+        },
+        {
+            "id": 17,
+            "name": "Peacock Temple Necklace ",
+            "category": "Temple Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/76d4d7cd0b792cae.jpg",
+            "rating": 4.5,
+            "weight": 55.48,
+            "rateType": "gold22k",
+            "makingCharges": 72124
+        },
+        {
+            "id": 16,
+            "name": "Traditional Long Necklace ",
+            "category": "Temple Long Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/5a23d5c9b25d2fa0.jpg",
+            "rating": 4.5,
+            "weight": 36.2,
+            "rateType": "gold22k",
+            "makingCharges": 47060
+        },
+        {
+            "id": 15,
+            "name": "Divya Vaibhav Temple Long Necklace ",
+            "category": "Temple Layered Long Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/586ae7947a51e0ad.jpg",
+            "rating": 4.5,
+            "weight": 70.9,
+            "rateType": "gold22k",
+            "makingCharges": 92170
+        },
+        {
+            "id": 14,
+            "name": "Panchdhara Rajhhaar",
+            "category": "Temple Layered Long Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/0361051081671e99.jpg",
+            "rating": 4.5,
+            "weight": 63.78,
+            "rateType": "gold22k",
+            "makingCharges": 82914
+        },
+        {
+            "id": 13,
+            "name": "Suryamani Heritage Temple Long Necklace ",
+            "category": "Temple Layered Long Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/5139da80611f2d75.jpg",
+            "rating": 4.5,
+            "weight": 71.48,
+            "rateType": "gold22k",
+            "makingCharges": 92924
+        },
+        {
+            "id": 12,
+            "name": "Ratna Kanchan Temple Long Necklace ",
+            "category": "Temple Long Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/99e3a1bc91535fdc.jpg",
+            "rating": 4.5,
+            "weight": 75.61,
+            "rateType": "gold22k",
+            "makingCharges": 98293
+        },
+        {
+            "id": 11,
+            "name": "Maharani Vaibhav Temple Long Necklace ",
+            "category": "Temple Long Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/6be006429ce4da67.jpg",
+            "rating": 4.5,
+            "weight": 110.45,
+            "rateType": "gold22k",
+            "makingCharges": 144200
+        },
+        {
+            "id": 10,
+            "name": "Swarna Samruddhi Temple Long Necklace ",
+            "category": "Temple Long Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/d42d49c75288f8d5.jpg",
+            "rating": 4.5,
+            "weight": 88.28,
+            "rateType": "gold22k",
+            "makingCharges": 114764
+        },
+        {
+            "id": 9,
+            "name": "Mayura Royale Temple Necklace Set ",
+            "category": "Temple Necklace set",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/87df12230467ecfa.jpg",
+            "rating": 4.5,
+            "weight": 39.21,
+            "rateType": "gold22k",
+            "makingCharges": 50973
+        },
+        {
+            "id": 8,
+            "name": "Temple Fancy Round Necklace ",
+            "category": "Temple Necklace ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/130c660b0e0f9251.jpg",
+            "rating": 4.5,
+            "weight": 32.36,
+            "rateType": "gold22k",
+            "makingCharges": 42068
+        },
+        {
+            "id": 7,
+            "name": "Royal Swarna Kundan Pendent Set",
+            "category": "Antique Pendant Set",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/299192063e00c0c7.jpg",
+            "rating": 4.5,
+            "weight": 21.37,
+            "rateType": "gold22k",
+            "makingCharges": 33123
+        },
+        {
+            "id": 6,
+            "name": "Aaranya Antique Pendant Set",
+            "category": "Antique Pendant Set",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/a8f3b527c23547b1.jpg",
+            "rating": 4.5,
+            "weight": 20.31,
+            "rateType": "gold22k",
+            "makingCharges": 31480
+        },
+        {
+            "id": 5,
+            "name": "Maharani Nakshatra Pendant Set",
+            "category": "Antique Pendant Set",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/15c0dc390bd8b8b5.jpg",
+            "rating": 4.5,
+            "weight": 23.45,
+            "rateType": "gold22k",
+            "makingCharges": 35650
+        },
+        {
+            "id": 4,
+            "name": "New Product",
+            "category": "Temple Necklace Set",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/88b942a8ad2709e3.jpg",
+            "rating": 4.5,
+            "weight": 41.21,
+            "rateType": "gold22k",
+            "makingCharges": 2000
+        },
+        {
+            "id": 3,
+            "name": "Traditional Temple Choker with Latkan",
+            "category": "Temple Choker",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/4955cc80bf51772b.jpg",
+            "rating": 4.5,
+            "weight": 70.62,
+            "rateType": "gold22k",
+            "makingCharges": 91806
+        },
+        {
+            "id": 2,
+            "name": "New Product",
+            "category": "Temple Choker ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/5ce37d01541a916c.jpg",
+            "rating": 4.5,
+            "weight": 64.4,
+            "rateType": "gold22k",
+            "makingCharges": 83720
+        },
+        {
+            "id": 1,
+            "name": "Floral Peacock Temple Necklace ",
+            "category": "Temple Choker ",
+            "price": 25000,
+            "metal": "22K Gold",
+            "image": "/media/7eb5d8b2b2767827.jpg",
+            "rating": 4.5,
+            "weight": 45.28,
+            "rateType": "gold22k",
+            "makingCharges": 58864
+        }
+    ],
+    "occasions": [],
+    "trustFeatures": [],
+    "testimonials": [],
+    "productDetail": {
+        "defaultDescription": "Handcrafted with precision and certified for purity. BIS hallmarked with lifetime exchange available.",
+        "trustChips": [
+            "BIS Hallmarked",
+            "Free Shipping",
+            "Lifetime Exchange"
+        ],
+        "relatedHeading": "You May Also Like"
+    },
+    "enquiry": {
+        "cartGreeting": "I would like to enquire about the following items:",
+        "cartClosing": "Please share availability, pricing, and delivery details.\n\nThank you!",
+        "cartSubject": "Jewellery enquiry from"
+    }
+}

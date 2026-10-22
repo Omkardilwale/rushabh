@@ -1,4 +1,5 @@
-import { readSiteContent, writeSiteContent } from "@/lib/content/storage";
+import { revalidatePath } from "next/cache";
+import { readSiteContentResult, writeSiteContent } from "@/lib/content/storage";
 import type { SiteContent } from "@/lib/content/types";
 import { canSyncRates } from "./goldapi";
 import { fetchLiveMetalRates } from "./fetch-rates";
@@ -7,7 +8,15 @@ export async function syncMetalRates(options?: {
   force?: boolean;
   skipThrottle?: boolean;
 }) {
-  const content = await readSiteContent();
+  const loaded = await readSiteContentResult();
+  if (loaded.source === "defaults") {
+    return {
+      skipped: true as const,
+      reason: "rushabh.data.json could not be read — skipped rate sync",
+      content: loaded.content,
+    };
+  }
+  const content = loaded.content;
   const force = options?.force ?? false;
   const skipThrottle = options?.skipThrottle ?? false;
 
@@ -52,6 +61,8 @@ export async function syncMetalRates(options?: {
   };
 
   await writeSiteContent(updated);
+  revalidatePath("/", "layout");
+  revalidatePath("/shop");
 
   return {
     skipped: false as const,

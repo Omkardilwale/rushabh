@@ -4,8 +4,6 @@ import { SiteEffects } from "@/components/effects/SiteEffects";
 import { getSiteContent } from "@/lib/content/server";
 import "./globals.css";
 
-export const dynamic = "force-dynamic";
-
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin"],

@@ -35,7 +35,7 @@ import {
   VERCEL_PAYLOAD_LIMIT_BYTES,
 } from "@/components/admin/AdminFields";
 import { useSiteContent } from "@/context/ContentContext";
-import { computeProductPrice, formatPrice, getProductUnit } from "@/lib/data";
+import { computeProductPrice, formatPrice, getProductUnit, inferProductRateType } from "@/lib/data";
 import type { ProductRateType, SiteContent } from "@/lib/content/types";
 
 const rateTypeOptions: { value: ProductRateType; label: string }[] = [
@@ -104,7 +104,7 @@ function buildSavePayload(draft: SiteContent, liveContent: SiteContent): string 
 
 export function AdminDashboard() {
   const router = useRouter();
-  const { content: liveContent, updateContent, refresh } = useSiteContent();
+  const { content: liveContent } = useSiteContent();
   const [draft, setDraft] = useState<SiteContent>(liveContent);
   const [tab, setTab] = useState<TabId>("site");
   const [saving, setSaving] = useState(false);
@@ -162,10 +162,8 @@ export function AdminDashboard() {
       setMessage(data.error ?? "Save failed");
       return;
     }
-    const data = (await res.json()) as { content: SiteContent };
-    updateContent(data.content);
-    await refresh();
-    setMessage("Saved successfully. Changes are live.");
+    await res.json();
+    setMessage("Saved to the database. The website still shows rushabh.data.json.");
   }
 
   async function handleLogout() {
@@ -197,10 +195,8 @@ export function AdminDashboard() {
       }
       if (data.content) {
         setDraft((prev) => ({ ...prev, store: data.content! }));
-        updateContent({ ...liveContent, store: data.content });
       }
-      await refresh();
-      setRatesSyncMessage("Rates synced from GoldAPI.io.");
+      setRatesSyncMessage("Rates saved to the database.");
     } catch {
       setRatesSyncMessage("Sync failed — check GOLDAPI_KEY in env.");
     } finally {
@@ -555,11 +551,13 @@ export function AdminDashboard() {
             >
               {draft.products.map((product, i) => {
                 const computed = computeProductPrice(product, draft.store);
-                const unit = getProductUnit(product.rateType);
+                const rateType = inferProductRateType(product);
+                const unit = getProductUnit(rateType);
                 const usesLiveRate =
                   Boolean(product.weight && product.weight > 0) &&
-                  product.rateType !== "none" &&
-                  product.rateType !== undefined;
+                  rateType !== "none";
+                const extraCharges =
+                  (product.makingCharges ?? 0) + (product.otherCharges ?? 0);
                 return (
                 <ItemCard
                   key={product.id}
@@ -572,8 +570,10 @@ export function AdminDashboard() {
                     <Field label="Category" value={product.category} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, category: v }; patch("products", products); }} />
                     <Field label="Metal" value={product.metal} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, metal: v }; patch("products", products); }} />
                     <Field label={`Weight (${unit === "ct" ? "carats" : "grams"})`} type="number" value={product.weight ?? ""} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, weight: v ? Number(v) : undefined }; patch("products", products); }} />
-                    <SelectField label="Price source" value={product.rateType ?? "none"} options={rateTypeOptions} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, rateType: v as ProductRateType }; patch("products", products); }} />
-                    <Field label="Making charges (₹)" type="number" value={product.makingCharges ?? ""} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, makingCharges: v ? Number(v) : undefined }; patch("products", products); }} />
+                    <SelectField label="Price source" value={rateType} options={rateTypeOptions} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, rateType: v as ProductRateType }; patch("products", products); }} />
+                    <Field label="Making charges (₹)" type="number" value={product.makingCharges ?? ""} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, makingCharges: v ? Number(v) : 0 }; patch("products", products); }} />
+                    <Field label="Other charges (₹)" type="number" value={product.otherCharges ?? ""} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, otherCharges: v ? Number(v) : 0 }; patch("products", products); }} />
+                    <Field label="Wastage (%)" type="number" value={product.wastagePercent ?? ""} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, wastagePercent: v ? Number(v) : 0 }; patch("products", products); }} />
                     <Field label={usesLiveRate ? "Base price (fallback)" : "Price (₹)"} type="number" value={product.price} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, price: Number(v) }; patch("products", products); }} />
                     <Field label="Original price (strike-through)" type="number" value={product.originalPrice ?? ""} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, originalPrice: v ? Number(v) : undefined }; patch("products", products); }} />
                     <Field label="Rating" type="number" value={product.rating} onChange={(v) => { const products = [...draft.products]; products[i] = { ...product, rating: Number(v) }; patch("products", products); }} />
@@ -585,7 +585,10 @@ export function AdminDashboard() {
                     <span className="font-semibold text-maroon">{formatPrice(computed)}</span>
                     {usesLiveRate && (
                       <span className="ml-1 text-xs text-foreground/55">
-                        ({product.weight} {unit} × live rate + {formatPrice(product.makingCharges ?? 0)} charges)
+                        ({product.weight} {unit} × today’s {rateType.replace("gold", "").replace("k", "K")} rate
+                        {product.wastagePercent ? ` + ${product.wastagePercent}% wastage` : ""}
+                        {" + "}
+                        {formatPrice(extraCharges)} charges)
                       </span>
                     )}
                   </div>

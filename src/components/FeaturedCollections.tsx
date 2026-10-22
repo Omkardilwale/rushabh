@@ -77,7 +77,6 @@ export function FeaturedCollections() {
                   src={items[active].image}
                   alt={items[active].name}
                   fill
-                  priority
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-maroon-dark/90 via-maroon-dark/40 to-transparent" />

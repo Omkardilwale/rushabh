@@ -9,21 +9,35 @@ export type { Product };
 
 type StoreSettings = SiteContent["store"];
 
+export function inferProductRateType(product: Product): ProductRateType {
+  if (product.rateType) return product.rateType;
+
+  const metal = product.metal.toLowerCase();
+  if (metal.includes("24")) return "gold24k";
+  if (metal.includes("18")) return "gold18k";
+  if (metal.includes("22") || metal.includes("gold")) return "gold22k";
+  if (metal.includes("silver")) return "silver";
+  if (metal.includes("diamond")) return "diamond";
+  return "none";
+}
+
 export function getMetalRatePerGram(
   rateType: ProductRateType | undefined,
   store: StoreSettings,
 ): number | null {
   switch (rateType) {
     case "gold24k":
-      return store.goldRate.rate24k;
+      return store.goldRate.rate24k > 0 ? store.goldRate.rate24k : null;
     case "gold22k":
-      return store.goldRate.rate22k;
+      return store.goldRate.rate22k > 0 ? store.goldRate.rate22k : null;
     case "gold18k":
-      return store.goldRate.rate18k;
+      return store.goldRate.rate18k > 0 ? store.goldRate.rate18k : null;
     case "silver":
-      return store.silverRate.rate999;
+      return store.silverRate.rate999 > 0 ? store.silverRate.rate999 : null;
     case "diamond":
-      return store.diamondRate.ratePerCarat;
+      return store.diamondRate?.ratePerCarat > 0
+        ? store.diamondRate.ratePerCarat
+        : null;
     default:
       return null;
   }
@@ -34,25 +48,29 @@ export function getProductUnit(rateType: ProductRateType | undefined): "g" | "ct
   return rateType === "diamond" ? "ct" : "g";
 }
 
+export function getProductExtraCharges(product: Product): number {
+  return (product.makingCharges ?? 0) + (product.otherCharges ?? 0);
+}
+
 /**
- * Today's total price for a product: when a weight + live rate type are set,
- * total = weight × today's metal rate + custom charges. Otherwise falls back
- * to the manually entered price.
+ * Today's total on the website:
+ * (weight × today's rate) + wastage% + making charges + other charges.
+ * Falls back to the manual price only when no live rate can be applied.
  */
 export function computeProductPrice(
   product: Product,
   store: StoreSettings,
 ): number {
-  const rate =
-    product.weight && product.weight > 0
-      ? getMetalRatePerGram(product.rateType, store)
-      : null;
+  const weight = product.weight ?? 0;
+  if (weight <= 0) return Math.round(product.price || 0);
 
-  if (rate && product.weight) {
-    return Math.round(rate * product.weight + (product.makingCharges ?? 0));
-  }
+  const rateType = inferProductRateType(product);
+  const rate = getMetalRatePerGram(rateType, store);
+  if (rate == null) return Math.round(product.price || 0);
 
-  return product.price;
+  const metalValue = rate * weight;
+  const wastage = metalValue * ((product.wastagePercent ?? 0) / 100);
+  return Math.round(metalValue + wastage + getProductExtraCharges(product));
 }
 
 export function formatWeight(weight?: number, unit: "g" | "ct" = "g"): string | null {

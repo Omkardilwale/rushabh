@@ -18,6 +18,7 @@ import {
   formatPrice,
   formatWeight,
   getProductUnit,
+  inferProductRateType,
 } from "@/lib/data";
 import {
   getShopFilterLabel,
@@ -126,7 +127,7 @@ function ShopPageContent() {
         selectedMetal === "All" || product.metal === selectedMetal;
       const priceMatch =
         price >= selectedPrice.min && price <= selectedPrice.max;
-      const urlMatch = matchesShopUrlFilters(product, urlFilters);
+      const urlMatch = matchesShopUrlFilters(product, urlFilters, price);
       return categoryMatch && metalMatch && priceMatch && urlMatch;
     });
   }, [products, content.store, selectedCategory, selectedMetal, selectedPrice, urlFilters]);
@@ -318,32 +319,14 @@ function ShopPageContent() {
                     )}
                   </motion.div>
                 ) : (
-                  <motion.div
+                  <div
                     key={gridKey}
                     className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:gap-6"
-                    initial="hidden"
-                    animate="visible"
-                    variants={{
-                      hidden: {},
-                      visible: { transition: { staggerChildren: 0.06 } },
-                    }}
                   >
                     {filteredProducts.map((product) => (
-                      <Link key={product.id} href={`/shop/${product.id}`}>
+                      <Link key={product.id} href={`/shop/${product.id}`} className="cv-auto">
                       <JharokhaFrame tone="white" className="group transition-shadow hover:shadow-md">
                       <motion.article
-                        variants={{
-                          hidden: { opacity: 0, y: 24, scale: 0.96 },
-                          visible: {
-                            opacity: 1,
-                            y: 0,
-                            scale: 1,
-                            transition: {
-                              duration: 0.45,
-                              ease: [0.22, 1, 0.36, 1] as const,
-                            },
-                          },
-                        }}
                         className="relative"
                         whileHover={{
                           y: -6,
@@ -386,9 +369,9 @@ function ShopPageContent() {
                                 {product.rating}
                               </span>
                             </div>
-                            {formatWeight(product.weight, getProductUnit(product.rateType)) && (
+                            {formatWeight(product.weight, getProductUnit(inferProductRateType(product))) && (
                               <span className="text-xs text-foreground/50">
-                                · {formatWeight(product.weight, getProductUnit(product.rateType))}
+                                · {formatWeight(product.weight, getProductUnit(inferProductRateType(product)))}
                               </span>
                             )}
                           </div>
@@ -426,7 +409,7 @@ function ShopPageContent() {
                       </JharokhaFrame>
                       </Link>
                     ))}
-                  </motion.div>
+                  </div>
                 )}
               </AnimatePresence>
             </div>

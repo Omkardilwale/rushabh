@@ -9,8 +9,9 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import type { SiteContent } from "@/lib/content/types";
 import { computeProductPrice, getProductById } from "@/lib/data";
-import { getStoreSettings } from "@/lib/store-settings";
+import { useSiteContent } from "@/context/ContentContext";
 
 const STORAGE_KEY = "rushabh-cart";
 
@@ -60,15 +61,21 @@ function readStoredCart(): CartItem[] {
   }
 }
 
-function toCartLines(items: CartItem[]): CartLine[] {
+function toCartLines(
+  items: CartItem[],
+  products: SiteContent["products"],
+  store: SiteContent["store"],
+): CartLine[] {
   return items
     .map((item) => {
-      const product = getProductById(item.productId);
+      const product =
+        products.find((entry) => entry.id === item.productId) ??
+        getProductById(item.productId);
       if (!product) return null;
       return {
         ...item,
         name: product.name,
-        price: computeProductPrice(product, getStoreSettings()),
+        price: computeProductPrice(product, store),
         metal: product.metal,
         image: product.image,
         category: product.category,
@@ -78,6 +85,7 @@ function toCartLines(items: CartItem[]): CartLine[] {
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const { content } = useSiteContent();
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
@@ -92,7 +100,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   }, [items, hydrated]);
 
-  const lines = useMemo(() => toCartLines(items), [items]);
+  const lines = useMemo(
+    () => toCartLines(items, content.products, content.store),
+    [items, content.products, content.store],
+  );
 
   const itemCount = useMemo(
     () => lines.reduce((sum, line) => sum + line.quantity, 0),

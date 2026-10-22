@@ -36,6 +36,8 @@ export function emptyProduct(id: number): Product {
     weight: 5,
     rateType: "gold22k",
     makingCharges: 2000,
+    otherCharges: 0,
+    wastagePercent: 0,
   };
 }
 

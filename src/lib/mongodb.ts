@@ -19,16 +19,23 @@ export async function connectMongoose(): Promise<typeof mongoose> {
 
   if (!global._mongooseConn) {
     mongoose.set("strictQuery", true);
-    global._mongooseConn = mongoose
-      .connect(uri, {
+    const timeoutMs = 8000;
+    global._mongooseConn = Promise.race([
+      mongoose.connect(uri, {
         dbName,
         bufferCommands: false,
-        serverSelectionTimeoutMS: 10000,
-      })
-      .catch((error) => {
-        global._mongooseConn = undefined;
-        throw error;
-      });
+        serverSelectionTimeoutMS: timeoutMs,
+        connectTimeoutMS: timeoutMs,
+        socketTimeoutMS: timeoutMs,
+      }),
+      new Promise<typeof mongoose>((_, reject) => {
+        setTimeout(() => reject(new Error("MongoDB connect timed out")), timeoutMs + 250);
+      }),
+    ]).catch((error) => {
+      global._mongooseConn = undefined;
+      void mongoose.disconnect().catch(() => undefined);
+      throw error;
+    });
   }
 
   return global._mongooseConn;

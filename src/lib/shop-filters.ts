@@ -32,7 +32,11 @@ function titleFromSlug(slug: string): string {
     .join(" ");
 }
 
-function matchesOccasion(product: Product, occasion: string): boolean {
+function matchesOccasion(
+  product: Product,
+  occasion: string,
+  livePrice: number,
+): boolean {
   const name = product.name.toLowerCase();
   const category = slugifyFilterValue(product.category);
   const badge = product.badge?.toLowerCase() ?? "";
@@ -60,12 +64,12 @@ function matchesOccasion(product: Product, occasion: string): boolean {
         badge === "heritage"
       );
     case "gifting":
-      return product.price <= 50000;
+      return livePrice <= 50000;
     case "daily-wear":
       return (
         category === "earrings" ||
         category === "pendants" ||
-        product.price <= 60000
+        livePrice <= 60000
       );
     case "anniversary":
       return name.includes("necklace") || name.includes("diamond");
@@ -77,6 +81,7 @@ function matchesOccasion(product: Product, occasion: string): boolean {
 export function matchesShopUrlFilters(
   product: Product,
   filters: ShopUrlFilters,
+  livePrice = product.price,
 ): boolean {
   if (filters.category) {
     const slug = slugifyFilterValue(filters.category);
@@ -102,7 +107,7 @@ export function matchesShopUrlFilters(
     return false;
   }
 
-  if (filters.occasion && !matchesOccasion(product, filters.occasion.toLowerCase())) {
+  if (filters.occasion && !matchesOccasion(product, filters.occasion.toLowerCase(), livePrice)) {
     return false;
   }
 

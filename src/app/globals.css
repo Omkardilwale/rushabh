@@ -114,6 +114,21 @@ body {
   animation: float 6s ease-in-out infinite;
 }
 
+/* Skip layout and paint for product cards that are off screen. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 420px;
+}
+
+@keyframes page-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.page-enter {
+  animation: page-enter 0.2s ease-out;
+}
+
 /* Hide scrollbar for carousels */
 .scrollbar-hide {
   -ms-overflow-style: none;

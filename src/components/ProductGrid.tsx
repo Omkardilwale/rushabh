@@ -10,13 +10,14 @@ import {
   formatPrice,
   formatWeight,
   getProductUnit,
+  inferProductRateType,
 } from "@/lib/data";
 import type { Product, SiteContent } from "@/lib/content/types";
 import { useSiteContent } from "@/context/ContentContext";
 import { useCart } from "@/context/CartContext";
 import { HeritageCardTopBand, JharokhaFrame } from "@/components/ui/JharokhaFrame";
 import { RoyalBackground } from "./effects/RoyalBackground";
-import { ScrollReveal, StaggerContainer, StaggerItem } from "./effects/ScrollReveal";
+import { ScrollReveal } from "./effects/ScrollReveal";
 
 function ProductCard({
   product,
@@ -28,7 +29,10 @@ function ProductCard({
   const ref = useRef<HTMLDivElement>(null);
   const { addToCart } = useCart();
   const price = computeProductPrice(product, store);
-  const weightLabel = formatWeight(product.weight, getProductUnit(product.rateType));
+  const weightLabel = formatWeight(
+    product.weight,
+    getProductUnit(inferProductRateType(product)),
+  );
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -199,20 +203,19 @@ export function ProductGrid() {
             </p>
           </div>
         ) : (
-          <StaggerContainer
+          <div
             ref={scrollRef}
-            stagger={0.08}
             className="scrollbar-hide -mx-4 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 lg:grid-cols-4"
           >
             {products.map((product) => (
-              <StaggerItem
+              <div
                 key={product.id}
-                className="w-[72vw] shrink-0 snap-center sm:w-[45vw] md:w-auto"
+                className="cv-auto w-[72vw] shrink-0 snap-center sm:w-[45vw] md:w-auto"
               >
                 <ProductCard product={product} store={content.store} />
-              </StaggerItem>
+              </div>
             ))}
-          </StaggerContainer>
+          </div>
         )}
       </div>
     </section>

@@ -1,8 +1,31 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
-import { getSiteContent, isAdminAuthenticated } from "@/lib/content/server";
-import { mergeWithDefaults } from "@/lib/content/storage";
-import { writeSiteContent } from "@/lib/content/storage";
+import { getSiteContentResult, isAdminAuthenticated } from "@/lib/content/server";
+import { mergeWithDefaults, writeSiteContent } from "@/lib/content/storage";
 import type { Product, SiteContent } from "@/lib/content/types";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const maxDuration = 20;
+
+function jsonNoStore(
+  data: unknown,
+  status = 200,
+  extraHeaders?: Record<string, string>,
+) {
+  return NextResponse.json(data, {
+    status,
+    headers: {
+      "Cache-Control": "no-store, no-cache, must-revalidate",
+      ...extraHeaders,
+    },
+  });
+}
+
+function revalidatePublicPages() {
+  revalidatePath("/", "layout");
+  revalidatePath("/shop");
+}
 
 type ContentPatchBody = {
   patch?: Partial<SiteContent>;
@@ -14,35 +37,56 @@ type ContentPatchBody = {
 };
 
 export async function GET() {
-  const content = await getSiteContent();
-  return NextResponse.json(content);
+  const { content, source } = await getSiteContentResult();
+  return jsonNoStore(content, 200, { "X-Content-Source": source });
 }
 
 export async function PUT(request: Request) {
   if (!(await isAdminAuthenticated())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return jsonNoStore({ error: "Unauthorized" }, 401);
   }
 
   try {
+    const loaded = await getSiteContentResult();
+    if (loaded.source === "defaults") {
+      return jsonNoStore(
+        {
+          error:
+            "rushabh.data.json could not be read, so save was blocked. Check that the file exists in the project root.",
+        },
+        503,
+      );
+    }
     const body = (await request.json()) as Partial<SiteContent>;
     const content = mergeWithDefaults(body);
     await writeSiteContent(content);
-    return NextResponse.json({ ok: true, content });
+    revalidatePublicPages();
+    return jsonNoStore({ ok: true, content });
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Failed to save content";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return jsonNoStore({ error: message }, 500);
   }
 }
 
 export async function PATCH(request: Request) {
   if (!(await isAdminAuthenticated())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return jsonNoStore({ error: "Unauthorized" }, 401);
   }
 
   try {
+    const loaded = await getSiteContentResult();
+    if (loaded.source === "defaults") {
+      return jsonNoStore(
+        {
+          error:
+            "rushabh.data.json could not be read, so save was blocked. Check that the file exists in the project root.",
+        },
+        503,
+      );
+    }
     const body = (await request.json()) as ContentPatchBody;
-    const current = await getSiteContent();
+    const current = loaded.content;
     const merged = mergeWithDefaults({ ...current, ...(body.patch ?? {}) });
 
     if (body.products) {
@@ -84,10 +128,11 @@ export async function PATCH(request: Request) {
     }
 
     await writeSiteContent(merged);
-    return NextResponse.json({ ok: true, content: merged });
+    revalidatePublicPages();
+    return jsonNoStore({ ok: true, content: merged });
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Failed to save content";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return jsonNoStore({ error: message }, 500);
   }
 }

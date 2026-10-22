@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -35,6 +36,7 @@ export function ContentProvider({
     initialContent ?? defaultSiteContent,
   );
   const [loading, setLoading] = useState(!initialContent);
+  const hydratedRef = useRef(false);
 
   const applyContent = useCallback((next: SiteContent) => {
     setContent(next);
@@ -49,12 +51,15 @@ export function ContentProvider({
   }, [applyContent]);
 
   useEffect(() => {
-    if (initialContent) {
-      applyContent(initialContent);
+    if (!hydratedRef.current) {
+      applyContent(initialContent ?? defaultSiteContent);
+      hydratedRef.current = true;
       setLoading(false);
-      return;
     }
-    void refresh().finally(() => setLoading(false));
+
+    if (!initialContent) {
+      void refresh().finally(() => setLoading(false));
+    }
   }, [initialContent, applyContent, refresh]);
 
   const value = useMemo(

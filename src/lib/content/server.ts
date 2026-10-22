@@ -1,7 +1,8 @@
 import "server-only";
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { setRuntimeContent } from "./client";
-import { readSiteContent } from "./storage";
+import { readSiteContentResult, type SiteContentRead } from "./storage";
 
 export const ADMIN_COOKIE = "rushabh_admin";
 
@@ -9,10 +10,14 @@ export function getAdminPassword(): string {
   return process.env.ADMIN_PASSWORD ?? "rushabh-admin";
 }
 
+export const getSiteContentResult = cache(async (): Promise<SiteContentRead> => {
+  const result = await readSiteContentResult();
+  setRuntimeContent(result.content);
+  return result;
+});
+
 export async function getSiteContent() {
-  const content = await readSiteContent();
-  setRuntimeContent(content);
-  return content;
+  return (await getSiteContentResult()).content;
 }
 
 export async function isAdminAuthenticated(): Promise<boolean> {

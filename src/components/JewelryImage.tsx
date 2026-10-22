@@ -65,6 +65,7 @@ export function JewelryImage({
       height={height}
       className={imgClass}
       loading={priority ? "eager" : "lazy"}
+      fetchPriority={priority ? "high" : "auto"}
       decoding="async"
       referrerPolicy={isRemoteImage(cleanSrc) ? "no-referrer" : undefined}
       onError={() => setHasError(true)}
