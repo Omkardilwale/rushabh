@@ -24,7 +24,7 @@ export function TrustBadges() {
       <div className="relative mx-auto max-w-7xl px-4 lg:px-8">
         {!trustFeatures || trustFeatures.length === 0 ? (
           <div className="py-2 text-center text-gold-light/80">
-            <p className="font-serif text-lg">Trust Features Not Available</p>
+            <p className="font-serif text-lg">The journey of Anup & Abhijit began with humble roots as small maize traders, building the foundation of a name that would stand for trust, honesty, and lasting relationships. With dedication and a vision for growth, the legacy of Anup Trader expanded into the fertilizer sector in 2007 with the launch of Anup Fertilizer. Today, in 2026, this journey of trust and togetherness enters a new golden chapter with the launch of Anup Jewellers. More than just a business, Anup is a legacy built on promises kept, relationships nurtured, and trust earned across generations. From grains to growth, and now to gold, the Anup name continues to shine with the same values, creating a legacy where every relationship is precious and every promise is golden.</p>
           </div>
         ) : (
           <motion.div

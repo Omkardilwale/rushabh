@@ -76,7 +76,7 @@ export function Footer() {
               <div>
                 <p className="font-medium text-white">{footer.storeHeading}</p>
                 <p className="text-sm">
-                  {store.storeLocation}. Visit for a premium shopping experience.
+                Location : Anup Jewellers , Opposite BSNL Office , Pune - Pandharpur Main Road , Malshiras , Dist : Solapur , Pin : 413107. Visit for a premium shopping experience.
                 </p>
               </div>
             </div>
